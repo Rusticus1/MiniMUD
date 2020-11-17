@@ -11,3 +11,16 @@ C:\Users\DCV\source\repos\Mini MUD\Mini MUD\obj\Debug\netcoreapp3.1\Mini MUD.csp
 C:\Users\DCV\source\repos\Mini MUD\Mini MUD\obj\Debug\netcoreapp3.1\Mini MUD.dll
 C:\Users\DCV\source\repos\Mini MUD\Mini MUD\obj\Debug\netcoreapp3.1\Mini MUD.pdb
 C:\Users\DCV\source\repos\Mini MUD\Mini MUD\obj\Debug\netcoreapp3.1\Mini MUD.genruntimeconfig.cache
+C:\Users\DCV\Documents\DCUebungen\Mini MUD\Mini MUD\obj\Debug\netcoreapp3.1\Mini MUD.csprojAssemblyReference.cache
+C:\Users\DCV\Documents\DCUebungen\Mini MUD\Mini MUD\obj\Debug\netcoreapp3.1\Mini MUD.AssemblyInfoInputs.cache
+C:\Users\DCV\Documents\DCUebungen\Mini MUD\Mini MUD\obj\Debug\netcoreapp3.1\Mini MUD.AssemblyInfo.cs
+C:\Users\DCV\Documents\DCUebungen\Mini MUD\Mini MUD\obj\Debug\netcoreapp3.1\Mini MUD.csproj.CoreCompileInputs.cache
+C:\Users\DCV\Documents\DCUebungen\Mini MUD\Mini MUD\obj\Debug\netcoreapp3.1\Mini MUD.dll
+C:\Users\DCV\Documents\DCUebungen\Mini MUD\Mini MUD\obj\Debug\netcoreapp3.1\Mini MUD.pdb
+C:\Users\DCV\Documents\DCUebungen\Mini MUD\Mini MUD\bin\Debug\netcoreapp3.1\Mini MUD.exe
+C:\Users\DCV\Documents\DCUebungen\Mini MUD\Mini MUD\bin\Debug\netcoreapp3.1\Mini MUD.deps.json
+C:\Users\DCV\Documents\DCUebungen\Mini MUD\Mini MUD\bin\Debug\netcoreapp3.1\Mini MUD.runtimeconfig.json
+C:\Users\DCV\Documents\DCUebungen\Mini MUD\Mini MUD\bin\Debug\netcoreapp3.1\Mini MUD.runtimeconfig.dev.json
+C:\Users\DCV\Documents\DCUebungen\Mini MUD\Mini MUD\bin\Debug\netcoreapp3.1\Mini MUD.dll
+C:\Users\DCV\Documents\DCUebungen\Mini MUD\Mini MUD\bin\Debug\netcoreapp3.1\Mini MUD.pdb
+C:\Users\DCV\Documents\DCUebungen\Mini MUD\Mini MUD\obj\Debug\netcoreapp3.1\Mini MUD.genruntimeconfig.cache

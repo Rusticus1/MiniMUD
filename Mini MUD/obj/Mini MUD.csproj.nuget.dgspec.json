@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\DCV\\source\\repos\\Mini MUD\\Mini MUD\\Mini MUD.csproj": {}
+    "C:\\Users\\DCV\\Documents\\DCUebungen\\Mini MUD\\Mini MUD\\Mini MUD.csproj": {}
   },
   "projects": {
-    "C:\\Users\\DCV\\source\\repos\\Mini MUD\\Mini MUD\\Mini MUD.csproj": {
+    "C:\\Users\\DCV\\Documents\\DCUebungen\\Mini MUD\\Mini MUD\\Mini MUD.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\DCV\\source\\repos\\Mini MUD\\Mini MUD\\Mini MUD.csproj",
+        "projectUniqueName": "C:\\Users\\DCV\\Documents\\DCUebungen\\Mini MUD\\Mini MUD\\Mini MUD.csproj",
         "projectName": "Mini MUD",
-        "projectPath": "C:\\Users\\DCV\\source\\repos\\Mini MUD\\Mini MUD\\Mini MUD.csproj",
+        "projectPath": "C:\\Users\\DCV\\Documents\\DCUebungen\\Mini MUD\\Mini MUD\\Mini MUD.csproj",
         "packagesPath": "C:\\Users\\DCV\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\DCV\\source\\repos\\Mini MUD\\Mini MUD\\obj\\",
+        "outputPath": "C:\\Users\\DCV\\Documents\\DCUebungen\\Mini MUD\\Mini MUD\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\DCV\\AppData\\Roaming\\NuGet\\NuGet.Config",

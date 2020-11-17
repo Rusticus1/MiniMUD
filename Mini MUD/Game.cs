@@ -16,41 +16,39 @@ namespace Mini_MUD
 
         public void Start()
         {
-            Item KeyLion = new Item("Lion key");
-            Item KeyEagle = new Item("Eagle key");
-            Item drybread = new ItemConsumable("dry bread");
-            Item grilledMeat = new ItemConsumable("grilled meat");
+            Item KeyGargoyle = new Item("Lion key", 0);
+            Item KeyEagle = new Item("Eagle key", 0);           
 
             #region Make Fields
             Wall wall = new Wall("wall", "Wall");
 
             Floor a0 = new Floor("Crypt", "the room is dark and filled with Coffins. Half are broken and the remains of their former inhabitants lie scattered on the floor. As you eyes adjust to the darkness you notice a pair or red glowing eyes staring at you in hunger ...");
-            Water a1 = new Water("Flooded room", "this room has been flooded. You cannot see how deep the water is.");
+            Water a1 = new Water("Flooded room", "this room has been flooded. You cannot see how deep the water is");
             Wall a2 = new Wall("Wall", "you cannot go through here");
-            Floor a3 = new Floor("a3", "notext");
+            Floor a3 = new Floor("Gargoyle door", "an enormous door shaped like a gargoyle");
             Floor a4 = new Floor("a4", "notext");
-            Floor a5 = new Floor("a5", "notext");
+            Floor a5 = new Floor("Torture chamber", "upon seein the devices in this room you can clearly see what it was used for");
 
-            Floor b0 = new Floor("b0", "notext");
-            Floor b1 = new Floor("b1", "notext");
+            Floor b0 = new Floor("Chapel", "you find rows of benches bofore an altar. This must have been used as a Chapel");
+            Floor b1 = new Floor("Courtyard", "you step into a courtyard. The faint light of a full moon shines through a foggy and otherwise pitch black night");
             Floor b2 = new Floor("North hall", "notext");
             Wall b3 = new Wall("Wall", "wall");
             Floor b4 = new Floor("b4", "notext");
             Floor b5 = new Floor("b5", "notext");
 
-            Floor c0 = new Floor("c0", "notext");
-            Floor c1 = new Floor("c1", "notext");
+            Floor c0 = new Floor("Storage", "the room is filled with old statues and broken furniture...");
+            Floor c1 = new Floor("West Hall", "a large but sparsly decorated hall");
             Floor c2 = new Floor("Hallway", "you walk through a hallway with a crossing");
-            Door c3 = new Door("Eagle door", "you stand before a large wodden door with a Eagle emblem . It looks like it has been hastily barricaded from the outside in an attempt to keep something locked inside...", KeyEagle);
+            Door c3 = new Door("Eagle door", "you stand before a large wodden door with a Eagle emblem. It looks like it has been hastily barricaded from the outside in an attempt to keep something locked inside...", KeyEagle);
             Floor c4 = new Floor("c4", "notext");
-            Floor c5 = new Floor("c5", "notext");
+            Floor c5 = new Floor("Winecellar", "a room filled with old barrels used to store whine");
 
             Floor d0 = new Floor("Sun Room", "the walls to the outside world are cracked and sunlight is flodding in");
             Floor d1 = new Floor("West Corridor", "a tight corridor... you can see a small room ruptured by faint sunbeams at the far end");
-            Floor d2 = new Floor("Entrance Hall", "you are back at the Entrance hall");
-            Wall d3 = new Wall("d3", "wall");
+            Floor d2 = new Floor("Entrance Hall", "you see a heavy door through which you entered this dungeon and two smaller archways leading deeper into the darkness");
+            Wall d3 = new Wall("Wall", "wall");
             Floor d4 = new Floor("Wall", "notext");
-            Floor d5 = new Floor("d5", "notext");
+            Floor d5 = new Floor("Treasure room", "you step into a room filled with enough treasure to buy a castle... maybe you could come back here with a larger backpack.");
             #endregion
                        
 
@@ -87,6 +85,7 @@ namespace Mini_MUD
             List<Field> fieldlist = new List<Field> { a0, a1, a2, a3, a4, a5, b0, b1, b2, b3, b4, b5, c0, c1, c2, c3, c4, c5, d0, d1, d2, d3, d4, d5 };
             #endregion                       
 
+            a0.AddItemToField(KeyEagle);
             #region Monsters
             Monster goblin = new Monster("Goblin", 5);
             Monster ghoul = new Monster("Ghoul", 10);
@@ -95,21 +94,29 @@ namespace Mini_MUD
 
             Hero hero = new Hero("Warrior", 10, fieldlist, d2);
 
-            Console.WriteLine("...you enter the main hall through a large, half rotten, wodden door");
-            Console.WriteLine("It takes a moment for your eyes to adjust to the darkness");
+            Console.WriteLine("...you enter the main hall through a large, heavy wodden door");
+            Console.WriteLine("As the heavy door closes shut behind you it takes a moment for your eyes to adjust to the darkness");
+            Console.ReadLine();
             while (hero.Hitpoints > 0)
             {
-                //evtl in methode bei field?
-                Console.WriteLine("");
-                Console.WriteLine("You are standing in: " + hero.Field.RoomName);                
-                Console.WriteLine("Where do you want to go...");
-                Console.WriteLine("");
-                hero.Field.PrintFieldMoves();  //ich stehe auf dem Feld deshalb muss ich des nicht mitgeben
+                Console.Clear();
+                Console.WriteLine("commands: take, use, backpack");
+                Console.WriteLine();
+                //check field contents                
+                Console.WriteLine("You are standing in the " + hero.Field.RoomName);
+                Console.WriteLine();
+                hero.Field.PrintFieldContents();
+                Console.WriteLine();
+                Console.WriteLine(hero.Energy + " energy left");
+                Console.WriteLine("What do you want to do...");                
+                Console.WriteLine();
+                hero.Field.PrintFieldMoves();  //ich stehe auf dem Feld deshalb muss ich des nicht mitgeben               
 
                 string input = Console.ReadLine().ToLower();
+                
                 if (input == "north")    //check if move possible Methode??  mit bool?  //wenn in neuen raum gemoved ist dann details
                 {
-                    hero.Moving(Direction.NORTH);     // Enter() Methode in Moving integriert.             
+                    hero.Moving(Direction.NORTH); // Enter() Methode in Moving integriert.             
                 }
                 else if(input == "east")
                 {
@@ -122,13 +129,33 @@ namespace Mini_MUD
                 else if(input == "west")
                 {
                     hero.Moving(Direction.WEST);
-                }
+                }              
                 else
                 {
-                    Console.WriteLine("where??");
+                    if(input == "take")
+                    {
+                        hero.TakeItem();
+                    }
+                    else if(input == "backpack")
+                    {
+                        hero.PrintBackpack();
+                    }
+                    else if(input == "use")
+                    {
+                        hero.PrintBackpack();
+                        Console.WriteLine("which item do you want to use");
+                        int use = int.Parse(Console.ReadLine());
+                        hero.UseItem(use);
+                    }
+                    else
+                    {
+                        Console.WriteLine("what??");
+                    }
+                    Console.WriteLine("continue ... ");
+                    Console.ReadLine();
                 }
                 // hero.EnterRoom();
-
+               
             }               
            
         }

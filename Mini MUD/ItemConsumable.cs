@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Mini_MUD
 {
-    class ItemConsumable : Item
+    public class ItemConsumable : Item
     {
-        public ItemConsumable(string name) : base(name)
+        public ItemConsumable(string name, int value) : base(name, value)
         {
         }
     }

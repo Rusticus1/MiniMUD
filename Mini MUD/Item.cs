@@ -6,13 +6,15 @@ namespace Mini_MUD
 {
     public class Item
     {
-        public string Name { get; set; }       
-        public int Weight { get; set; }
+        public string Name { get; set; } 
+        public int Value { get; set; }
+       
 
-        public Item(string name)
+        public Item(string name, int value)
         {
             this.Name = name;
-            this.Weight = 1;
+            this.Value = value;
+      
         }
     }
 }
