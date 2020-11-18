@@ -61,8 +61,7 @@ namespace Mini_MUD
             this.Item = item;
         }
         public void PrintFieldContents()  //keine parameter, weil ich kann das Feld ja mit dem Methodenaufruf mitschicken bzw. auf dem Feld aufrufen
-        {
-            Console.WriteLine(Description);
+        {            
             Console.Write("you found ");
             if(ItemConsumable != null)
             {

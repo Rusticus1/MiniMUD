@@ -6,7 +6,7 @@ namespace Mini_MUD
 {
     public class ItemConsumable : Item
     {
-        public ItemConsumable(string name, int value) : base(name, value)
+        public ItemConsumable(string name, int value, ItemType itemtype) : base(name, value, itemtype)
         {
         }
     }

@@ -21,13 +21,13 @@ namespace Mini_MUD.Fields
             var randomItem = randomNumber.Next(0, 6);
             if(randomItem == 1)
             {
-                ItemConsumable bread = new ItemConsumable("dry bread", 2);
+                ItemConsumable bread = new ItemConsumable("dry bread", 2, ItemType.FOOD);
                 this.ItemConsumable = bread;
                 
             }
             else if(randomItem == 2)
             {
-                ItemConsumable meat = new ItemConsumable("roasted meat (don't ask how it got here)", 5);
+                ItemConsumable meat = new ItemConsumable("roasted meat (don't ask how it got here)", 5, ItemType.FOOD);
                 this.ItemConsumable = meat;
             }
         
