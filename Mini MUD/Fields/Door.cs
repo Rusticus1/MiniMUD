@@ -13,6 +13,7 @@ namespace Mini_MUD
         }//hero cant enter and will be returned to previous room
         public override bool Enter()
         {
+            //if hero hat schlüssel true sonst false, aber dann brauch ich den hero
 
             return false;
         }

@@ -10,17 +10,19 @@ namespace Mini_MUD
         WEAPON,
         KEY,
     }
-    public class Item
+    public abstract class Item
     {
         public string Name { get; set; } 
         public int Value { get; set; }
-        public ItemType ItemType { get; internal set; }
-
-        public Item(string name, int value, ItemType itemtype)
+        public ItemType ItemType { get; set; }
+        public Item(string name, int value, ItemType itemType)
         {
             this.Name = name;
             this.Value = value;
-            this.ItemType = ItemType;
+            this.ItemType = itemType;
         }
+
+        //public abstract void consume();
+
     }
 }

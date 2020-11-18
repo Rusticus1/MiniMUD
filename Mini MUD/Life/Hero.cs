@@ -35,12 +35,11 @@ namespace Mini_MUD
             this.Field = startfield;
             this.Backpack = new List<Item>();
             this.BackpackMax = 6;
-
         }
 
         public void Moving(Direction direction) //hier ENTER() Methode!!!!!!!!
         {
-            //wenn er den key hat dannn ja sonst nein           
+            //wenn er den key hat dannn ja sonst nein - NEIN weil sonst geht nicht mit Enter () Methode          
             if (direction == Direction.NORTH)
             {
                 if (this.Field.North != null && this.Field.North.Enter())
@@ -48,6 +47,7 @@ namespace Mini_MUD
                     this.Field = this.Field.North;
                     this.Hitpoints -= 1;
                 }
+                //else if
             }
             else if (direction == Direction.EAST)
             {
@@ -72,7 +72,8 @@ namespace Mini_MUD
                     this.Field = this.Field.West;
                     this.Hitpoints -= 1;
                 }
-            }
+            } 
+            
         }
 
         public void Attacking()
@@ -97,10 +98,13 @@ namespace Mini_MUD
         public void UseItem(int position)
         {
             int i = position - 1;
+            //this.Backpack[i].consume();
+            //consume bei allen itemarten verschieden (wie enter() methode)
+            //so lassen wies ist weil einfacher :)
             if (this.Backpack[i].ItemType == ItemType.FOOD)   //kann man mit == schauen "ist objekt?"
             {
                 this.Hitpoints += this.Backpack[i].Value;
-                Console.WriteLine(this.Backpack[i].Name + " consumed and " + this.Backpack[position - 1].Value + " energy restored");
+                Console.WriteLine(this.Backpack[i].Name + " consumed and " + this.Backpack[position - 1].Value + " hitpoints restored");
                 if (this.Hitpoints > HitpointsMax)
                 {
                     this.Hitpoints = HitpointsMax;
@@ -113,6 +117,10 @@ namespace Mini_MUD
                 Console.WriteLine(this.Backpack[i].Name + " equipped. Base damage is now " + this.Backpack[i].Value);
                 this.Backpack.Remove(Backpack[i]);
             }
+            else if(this.Backpack[i].ItemType == ItemType.KEY)
+            {
+                
+            }
         }
 
         public void PrintBackpack()
@@ -121,6 +129,6 @@ namespace Mini_MUD
             {
                 Console.WriteLine((i + 1) + ". " + Backpack[i].Name);
             }
-        }
+        }        
     }
 }

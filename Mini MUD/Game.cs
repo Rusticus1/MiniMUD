@@ -30,7 +30,7 @@ namespace Mini_MUD
             Floor a4 = new Floor("a4", "notext");
             Floor a5 = new Floor("Torture chamber", "upon seein the devices in this room you can clearly see what it was used for");
 
-            Floor b0 = new Floor("Chapel", "rows upon rows of benches bofore an altar. This must have been used as a Chapel");
+            Floor b0 = new Floor("Abandoned chapel", "rows upon rows of benches bofore an altar. This must have been used as a Chapel");
             Floor b1 = new Floor("Courtyard", "you step into a courtyard. The faint light of a full moon shines through a foggy and otherwise pitch black night");
             Floor b2 = new Floor("North hall", "you notice the skeletal remains of a warrior cowering in a corner firmly holding his rusted old sword. He must have died ages ago");
             Wall b3 = new Wall("Wall", "wall");
@@ -100,11 +100,16 @@ namespace Mini_MUD
             Console.WriteLine("As the heavy door closes shut behind you it takes a moment for your eyes to adjust to the darkness");            
             Console.ReadLine();
 
-            //Waffen modifizieren schaden noch nciht
-            //schlüssel funktionieren wie??  bei türe das inventar durchgehen?
-            //kann ich alle arten von items in den rucksack packen?
+            //schlüssel funktionieren wie??  bei türe das inventar durchgehen? aber wie held zur türe geben
+            //use() verwenden um im Door room door aufzusperren??   nein mit Enter methode
+            //schlüssel verwenden und himmelsrichtung auswählen
 
+            // wenn hero.field.direction eine Door ist, dann mach true!
+
+            //kann ich alle arten von items in den rucksack packen? SOLVED
+            //Schwert wird immer wie Itemtype.Food behandelt und gegessen!!  SOLVED (itemType tippfehler! groß und kleinschreibung beachten!!!!!!!!)
             //vergleich  (items)  wenn item == 'class' itemConsumable   geht das???
+            
 
             while (hero.Hitpoints > 0)
             {
@@ -120,9 +125,10 @@ namespace Mini_MUD
                 Console.WriteLine("What do you want to do...");                
                 Console.WriteLine();
                 hero.Field.PrintFieldMoves();  //ich stehe auf dem Feld deshalb muss ich des nicht mitgeben               
-
+                
                 string input = Console.ReadLine().ToLower();
                 
+                //Richtungen sind einfacher mit enums
                 if (input == "north")    //check if move possible Methode??  mit bool?  //wenn in neuen raum gemoved ist dann details
                 {
                     hero.Moving(Direction.NORTH); // Enter() Methode in Moving integriert.             
@@ -155,7 +161,13 @@ namespace Mini_MUD
                         {
                             hero.PrintBackpack();
                             Console.WriteLine("which item do you want to use");
-                            int use = int.Parse(Console.ReadLine());
+                            //geht das einfaher??
+                            string useS = ""; // damit frägt er so lange bis eingabe ein int ist
+                            int use = 0;
+                            do
+                            {
+                                useS = Console.ReadLine();
+                            } while (!int.TryParse(useS, out use));
                             hero.UseItem(use);
                         }
                         else
@@ -170,11 +182,10 @@ namespace Mini_MUD
                     Console.WriteLine("continue ... ");
                     Console.ReadLine();
                 }
-                // hero.EnterRoom();
-               
-            }               
-           
+                // hero.EnterRoom();               
+            }                          
         }
+        //sobad man einen raum betritt muss geprüft werden ob ein Monster drinnen ist
         public void Encounter(Hero hero, List<Monster> monsters)
         {
             foreach(Monster m in monsters)
@@ -194,8 +205,7 @@ namespace Mini_MUD
                 Console.WriteLine("you have " +hero.Hitpoints + " left");
                 Console.WriteLine("'light' for fast attack, 'heavy' for heavy attack");
                 string attack = Console.ReadLine();
-                {
-                    
+                {                    
                     if (attack == "light")
                     {
                         int damage = hero.BaseDamage;
@@ -228,6 +238,10 @@ namespace Mini_MUD
             Console.WriteLine(monster.Name + " has been slain!. You take " + monster.Item.Name + " from it's corpse");
             hero.Backpack.Add(monster.Item);
             monster.Field = null;
+        }
+        public void UnlockDoor()
+        {
+
         }
         public void Headline(Hero hero)
         {

@@ -27,7 +27,7 @@ namespace Mini_MUD.Fields
             }
             else if(randomItem == 2)
             {
-                ItemConsumable meat = new ItemConsumable("roasted meat (don't ask how it got here)", 5, ItemType.FOOD);
+                ItemConsumable meat = new ItemConsumable("meat jerky", 5, ItemType.FOOD);
                 this.ItemConsumable = meat;
             }
         
