@@ -19,6 +19,7 @@ namespace Mini_MUD
         public int HitpointsMax { get; set; }
         //public int Energy { get; set; }
         public int BaseDamage { get; set; }
+        public int SpellDamage { get; set; }
         public List<Item> Backpack { get; set; }
         public int BackpackMax { get; set; }
         public Field Field { get; set; }
@@ -34,7 +35,7 @@ namespace Mini_MUD
             this.Fieldlist = fieldlist;
             this.Field = startfield;
             this.Backpack = new List<Item>();
-            this.BackpackMax = 6;
+            this.BackpackMax = 10;
             this.Alive = true;
         }
       
@@ -75,7 +76,6 @@ namespace Mini_MUD
                     this.Hitpoints -= 1;
                 }
             }
-
         }
 
         public void TakeItemConsumable()
@@ -90,7 +90,6 @@ namespace Mini_MUD
             {
                 Console.WriteLine("nothing here to take...");
             }
-
         }
 
         public void UseItem(int position)
@@ -113,6 +112,12 @@ namespace Mini_MUD
             {
                 this.BaseDamage = this.Backpack[i].Value;
                 Console.WriteLine(this.Backpack[i].Name + " equipped. Base damage is now " + this.Backpack[i].Value);
+                this.Backpack.Remove(Backpack[i]);
+            }
+            else if (this.Backpack[i].ItemType == ItemType.SPELL)
+            {
+                this.SpellDamage = this.Backpack[i].Value;
+                Console.WriteLine(this.Backpack[i].Name + " cast for " + this.Backpack[i].Value + " damage");
                 this.Backpack.Remove(Backpack[i]);
             }
             else if (this.Backpack[i].ItemType == ItemType.KEY)  //Wenn schlüssel ist dann prüfe alle angrenzenden türen und sperre sie auf  Wie auf TRUE setzen??

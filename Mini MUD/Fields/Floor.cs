@@ -18,7 +18,7 @@ namespace Mini_MUD.Fields
         public void RandomItemConsumable()
         {
             var randomNumber = new Random();
-            var randomItem = randomNumber.Next(0, 6);
+            var randomItem = randomNumber.Next(0, 5);
             if(randomItem == 1)
             {
                 ItemConsumable bread = new ItemConsumable("dry bread", 3, ItemType.FOOD);

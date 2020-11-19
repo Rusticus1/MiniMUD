@@ -3,6 +3,7 @@ using Mini_MUD.Life;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace Mini_MUD
 {
@@ -16,10 +17,12 @@ namespace Mini_MUD
 
         public void Start()
         {
-            ItemUseable keyGargoyle = new ItemUseable("lion key", 0, ItemType.KEY);
+            ItemUseable keyGargoyle = new ItemUseable("gargoyle key", 0, ItemType.KEY);
             ItemUseable keyEagle = new ItemUseable("eagle key", 0, ItemType.KEY);
             ItemUseable silverSword = new ItemUseable("silver sword", 4, ItemType.WEAPON);
             ItemUseable bfSword = new ItemUseable("big fucking sword", 5, ItemType.WEAPON);
+            ItemUseable gargoyleTrophy = new ItemUseable("gargoyle head trophy", 0, ItemType.VICTORY);
+            ItemUseable scrollFirebolt = new ItemUseable("scroll of firebolt", 10, ItemType.SPELL);
 
             ItemConsumable bread = new ItemConsumable("dry bread", 3, ItemType.FOOD);
             ItemConsumable meat = new ItemConsumable("meat jerky", 6, ItemType.FOOD);
@@ -31,16 +34,16 @@ namespace Mini_MUD
             Floor a0 = new Floor("Crypt", "the room is dark and filled with Coffins. Half are broken and the remains of their former inhabitants lie scattered on the floor. As your eyes adjust to the darkness you notice numerous pairs of red glowing eyes around you staring at you in hunger ...");
             Water a1 = new Water("Flooded room", "this room has been flooded. You cannot see how deep the water is");
             Floor a2 = new Floor("Kights Chambers", "this has a large dinnertable in the center and dozens of shields and weapons decorate the surrounding walls");
-            Door a3 = new Door("Gargoyle door", "an enormous door shaped like a gargoyle");
+            Door a3 = new Door("Gargoyle door", "you step through an enormous door shaped like a gargoyle. Inside you see a large stone statue ... or is it? As you approach, the statues eyes open with a crack!");
             Floor a4 = new Floor("Battlefield", "a large battle must have been fought here. the room is filled with dead bodies of creatures and men alike... you must be getting close");
-            Floor a5 = new Floor("Wizards tower", "you slowly walk up a spiral staircase to find a small room filled with books and jars full of unidentifiable inlaid animals");
+            Floor a5 = new Floor("Wizards tower", "you slowly walk up a spiral staircase to find a small room filled with old books and jars full of unidentifiable inlaid animals");
 
             Floor b0 = new Floor("Abandoned chapel", "rows upon rows of benches bofore an altar. This must have been used as a Chapel");
             Floor b1 = new Floor("Courtyard", "you step into a courtyard. The faint light of a full moon shines through a foggy and otherwise pitch black night");
             Floor b2 = new Floor("North hall", "you notice the skeletal remains of a warrior cowering in a corner firmly holding his rusted old sword. He must have died ages ago");
             Floor b3 = new Floor("Empty hall", "this hall might have been used for dust collection...");
             Floor b4 = new Floor("Torture chamber", "upon seein the devices in this room you can clearly see what it was used for");
-            Floor b5 = new Floor("b5", "notext");
+            Floor b5 = new Floor("Bedchambers", "there is no time for a nap ...");
 
             Floor c0 = new Floor("Storage", "the room is filled with old statues and broken furniture...");
             Floor c1 = new Floor("West hall", "a large but sparsly decorated hall");
@@ -52,12 +55,15 @@ namespace Mini_MUD
             Floor d0 = new Floor("Crumbling corner", "the walls to the outside world are cracked and moonlight illuminates the room");
             Floor d1 = new Floor("West corridor", "a tight corridor... you can see a small room ruptured by faint sunbeams at the far end");
             Floor d2 = new Floor("Entrance hall", "you see a heavy door through which you entered this dungeon and two smaller archways leading deeper into the darkness");
-            Wall d3 = new Wall("Wall", "wall");
-            Floor d4 = new Floor("Wall", "notext");
+            Floor d3 = new Floor("Well", "there is an old, dried out well in this room");
+            Floor d4 = new Floor("Weapons champber", "the room is filled racks containing all kinds of weapons and armor. Sadly, most are far beyond usable...");
             Floor d5 = new Floor("Treasure Room", "you step into a room filled with enough treasure to buy a castle... maybe you could come back here with a larger backpack.");
             #endregion
 
+            //damit Door.cs den Schlüssel kennt
             c3.AddItemUseable(keyEagle);
+            a3.AddItemUseable(keyGargoyle);
+
 
             //Methode für zuweisung???
             #region setNeightbours
@@ -96,11 +102,14 @@ namespace Mini_MUD
             #region Monsters
             Monster goblin = new Monster("Goblin", 10, 3, c0, silverSword);
             Monster ghoul = new Monster("Ghoul", 16, 2, a0, keyEagle);
-            Monster golem = new Monster("Golem", 20, 3, a3, keyGargoyle);
+            Monster golem = new Monster("Golem", 20, 3, d4, bfSword);
             Monster skeleton = new Monster("Skeleton", 13, 3, b4, healthPotion);
-            Monster gargoyle = new Monster("Gargoyle", 30, 4, a3, null);
+            Monster hoemunculus = new Monster("Hoemunculus", 8, 4, a5, scrollFirebolt);
+            Monster leprechaun = new Monster("Leprechaun", 5, 5, d5, keyGargoyle);
+            Monster gargoyle = new Monster("Gargoyle", 30, 4, a3, gargoyleTrophy);
+            //Monster der liste hinzufügen damit Encounter() geprüft werden kann.
 
-            List<Monster> monsters = new List<Monster>() { goblin, ghoul, golem, skeleton };
+            List<Monster> monsters = new List<Monster>() { goblin, ghoul, golem, skeleton, hoemunculus, leprechaun, gargoyle };
             #endregion
 
 
@@ -114,18 +123,21 @@ namespace Mini_MUD
             Console.WriteLine("As the heavy door closes shut behind you it takes a moment for your eyes to adjust to the darkness");
             Console.ReadLine();
 
-            //schlüssel funktionieren wie??  bei türe das inventar durchgehen? aber wie held zur türe geben
-            //use() verwenden um im Door room door aufzusperren??   nein mit Enter methode
+           
+            //use() verwenden um im Door room door aufzusperren??  
             //schlüssel verwenden und himmelsrichtung auswählen
 
-            // wenn hero.field.direction eine Door ist, dann mach true!
-
-            //kann ich alle arten von items in den rucksack packen? SOLVED
             //Schwert wird immer wie Itemtype.Food behandelt und gegessen!!  SOLVED (itemType tippfehler! groß und kleinschreibung beachten!!!!!!!!)
             //vergleich  (items)  wenn item == 'class' itemConsumable   geht das???  
+
+            //use()backpack möglichkeit zum abbrechen bzw. falls falsche eingabe ist.
+            //wenn monster hero tötet ist nicht gleich fertig. muss immer noch zuerst einen move machen?? wie kann ich ganz aus Game()raus bzw. direkt gameover machen
+
             Hero hero = warrior;
+            hero.Backpack.Add(healthPotion);
             while (hero.Alive == true)  // 
             {
+                VictoryCondition(hero);
                 Console.Clear();
                 Headline(hero);
                 Console.WriteLine(hero.Field.Description);  //muss bei encounter -> combat nochmal geprintet werden für die ausgabe, sonst ist es weg nach clear()
@@ -173,23 +185,39 @@ namespace Mini_MUD
                     else if (input == "use")
                     {
                         Use(hero);
-
-                    }
-                    //CHEATS
-                    else if (input == "eaglekey")
+                        hero.SpellDamage = 0;
+                    }                    
+                    //CHEATS  !!!!!! 
+                    else if (input == "cheateaglekey")
                     {
                         hero.Backpack.Add(keyEagle);
                     }
+                    else if (input == "cheatscroll")
+                    {
+                        hero.Backpack.Add(scrollFirebolt);
+                    }
+                    else if (input == "cheatmeat")
+                    {
+                        hero.Backpack.Add(meat);
+                    }
+                    else if(input == "cheatgargoylekey")
+                    {
+                        hero.Backpack.Add(keyGargoyle);
+                    }
+                    else if(input == "cheattrophy")
+                    {
+                        hero.Backpack.Add(gargoyleTrophy);
+                    }
+                    // CHEATS !!!!! 
                     else
                     {
                         Console.WriteLine("what??");
                     }
-
                     Console.WriteLine("continue ... ");
                     Console.ReadLine();
                 }
-
             }
+            
             Console.Clear();
             Console.WriteLine("you collapse and fall on the ground ...");
             Console.WriteLine("your story will end as a lifless corpse among innumerable others whose names will never be remembered ...");
@@ -199,6 +227,26 @@ namespace Mini_MUD
 
         }
         //sobad man einen raum betritt muss geprüft werden ob ein Monster drinnen ist
+        public void VictoryCondition(Hero hero)
+        {
+            foreach(Item item in hero.Backpack)
+            {
+                if(item.ItemType == ItemType.VICTORY)
+                {
+                    while(true)
+                    {
+                        Console.Clear();
+                        Console.WriteLine("");
+                        Console.WriteLine("the mighty gargoyle lies dead at your feet ... you cut off it's head as proof of your victory... ");
+                        Console.WriteLine("congratulations!");
+                        Thread.Sleep(1500);
+                        Console.Write("but ...");
+                        Console.WriteLine("our princess is in another castle!");
+                        Console.ReadLine();
+                    }
+                }
+            }
+        }
         public void Use(Hero hero)
         {
             if (hero.Backpack.Count > 0)
@@ -262,6 +310,8 @@ namespace Mini_MUD
                 else if (attack == "use")
                 {
                     Use(hero);
+                    monster.Hitpoints -= hero.SpellDamage;
+                    hero.SpellDamage = 0;
                 }
                 else
                 {
@@ -274,10 +324,10 @@ namespace Mini_MUD
                 }
                 else
                 {
-                    Console.Write(monster.Name + " has been slain!.");
+                    Console.Write(monster.Name + " has been slain!");
                     if (monster.Item != null)
                     {
-                        Console.WriteLine(" You take " + monster.Item.Name + " from it's corpse");
+                        Console.WriteLine(" You take " + monster.Item.Name + " from its corpse");
                     }
                     else
                     {
@@ -298,6 +348,7 @@ namespace Mini_MUD
                     Console.WriteLine(monster.Name + " has " + monster.Hitpoints + " hitpoints left");
                     Console.WriteLine("continue...");
                     Console.ReadLine();
+                    VictoryCondition(hero);
                     Console.Clear();
                     Headline(hero);
                 }
@@ -333,5 +384,6 @@ namespace Mini_MUD
             Console.WriteLine();
             // Console.WriteLine(hero.Field.Description); Nein weil die Headline soll immer da sein auch beim kampf
         }
+        
     }
 }

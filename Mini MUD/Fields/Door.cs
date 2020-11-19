@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace Mini_MUD
 {
@@ -15,7 +16,11 @@ namespace Mini_MUD
         public override bool Enter()
         {
             //if hero hat schlüssel true sonst false, aber dann brauch ich den hero
-
+            if(this.Unlocked is false)
+            {
+                Console.WriteLine("locked!");
+                Thread.Sleep(1500);
+            }
             return this.Unlocked;  // ! bedeutet gegenteil
         }
         public void AddItemUseable(ItemUseable item)

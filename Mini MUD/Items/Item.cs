@@ -10,6 +10,7 @@ namespace Mini_MUD
         WEAPON,
         KEY,
         SPELL,
+        VICTORY,
     }
     public abstract class Item
     {
