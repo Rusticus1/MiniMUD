@@ -23,6 +23,7 @@ namespace Mini_MUD
         public int BackpackMax { get; set; }
         public Field Field { get; set; }
         public List<Field> Fieldlist { get; set; }
+        public bool Alive { get; set; }
 
         public Hero(string name, int hitpoints, List<Field> fieldlist, Field startfield)
         {
@@ -35,11 +36,9 @@ namespace Mini_MUD
             this.Field = startfield;
             this.Backpack = new List<Item>();
             this.BackpackMax = 6;
+            this.Alive = true;
         }
-        public void Death()
-        {
-
-        }
+      
 
         public void Moving(Direction direction) //hier ENTER() Methode!!!!!!!!
         {

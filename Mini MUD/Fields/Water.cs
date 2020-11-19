@@ -13,6 +13,7 @@ namespace Mini_MUD.Fields
         }
         public override bool Enter() //enter methode bool?
         {
+
             return true;
         }
     }

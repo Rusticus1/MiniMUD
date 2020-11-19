@@ -102,7 +102,7 @@ namespace Mini_MUD
 
             List<Monster> monsters = new List<Monster>() { goblin, ghoul, golem, skeleton };
             #endregion
-            
+
 
             Hero hero = new Hero("Warrior", 20, fieldlist, d2);
 
@@ -120,18 +120,19 @@ namespace Mini_MUD
             //Schwert wird immer wie Itemtype.Food behandelt und gegessen!!  SOLVED (itemType tippfehler! groß und kleinschreibung beachten!!!!!!!!)
             //vergleich  (items)  wenn item == 'class' itemConsumable   geht das???
 
-
-            while (hero.Hitpoints > 0)
-            {
+            while(hero.Alive == true)  // 
+            {                
                 Console.Clear();
-                Headline(hero);
-                //Console.WriteLine(hero.Field.RoomName);    
-                Console.WriteLine(hero.Field.Description);
+                Headline(hero);               
+                Console.WriteLine(hero.Field.Description);  //muss bei encounter -> combat nochmal geprintet werden für die ausgabe, sonst ist es weg nach clear()
                 Encounter(hero, monsters);
 
+                IsAlive(hero);  //schleife muss beendet werden bei tod!!!
+                
                 hero.Field.PrintFieldContents();
                 Console.WriteLine();
                 Console.WriteLine(hero.Hitpoints + " hitpoints left");
+
                 Console.WriteLine("What do you want to do...");
                 Console.WriteLine();
                 hero.Field.PrintFieldMoves();  //ich stehe auf dem Feld deshalb muss ich des nicht mitgeben               
@@ -168,24 +169,7 @@ namespace Mini_MUD
                     else if (input == "use")
                     {
                         Use(hero);
-                        /*if (hero.Backpack.Count > 0)
-                        {
-                            hero.PrintBackpack();
-                            Console.WriteLine("which item do you want to use");
-                            //geht das einfaher??
-                            string useS = ""; // damit frägt er so lange bis eingabe ein int ist
-                            int use = 0;
-                            do
-                            {
-                                useS = Console.ReadLine();
-                            } while (!int.TryParse(useS, out use));
-                            hero.UseItem(use);
-                        }
-                        else
-                        {
-                            Console.WriteLine("your backpack is empty...");
-                        }
-                        */
+
                     }
                     //CHEATS
                     else if (input == "eaglekey")
@@ -196,15 +180,19 @@ namespace Mini_MUD
                     {
                         Console.WriteLine("what??");
                     }
+
                     Console.WriteLine("continue ... ");
                     Console.ReadLine();
                 }
-            }
-            if (hero.Hitpoints <= 0)
-            {
-                hero.Death();
-                // hero.EnterRoom();               
-            }
+
+            } 
+            Console.Clear();
+            Console.WriteLine("you collapse and fall on the ground ...");
+            Console.WriteLine("your story will end as a lifless corpse among innumerable others whose names will never be remembered ...");
+            Console.ReadLine();
+            Console.WriteLine("\t G A M E  O V E R ");
+            return;
+
         }
         //sobad man einen raum betritt muss geprüft werden ob ein Monster drinnen ist
         public void Use(Hero hero)
@@ -227,13 +215,12 @@ namespace Mini_MUD
                 Console.WriteLine("your backpack is empty...");
             } */
         }
-        public void IsDead()
+        public void IsAlive(Hero hero) //einfache prüfung mit bool ob Hero lebt oder tot ist
         {
-            Console.Clear();
-            Console.WriteLine("you collapse and fall on the ground ...");
-            Console.WriteLine("your story will end as a lifless corpse among innumerable others whose names will never be remembered ...");
-            Console.WriteLine(" G A M E  O V E R ");
-            return;
+            if (hero.Hitpoints <= 0)
+            {
+                hero.Alive = false;
+            }            
         }
         public void Encounter(Hero hero, List<Monster> monsters)
         {
@@ -245,63 +232,76 @@ namespace Mini_MUD
                 }
             }
         }
-        public void Combat(Hero hero, Monster monster) //fast oder heavy schreiben. bei rechtschreibfehler = "missed"
-        {
-            while (monster.Hitpoints > 0)
+        public void Combat(Hero hero, Monster monster) //light oder heavy schreiben. bei rechtschreibfehler = "missed"
+        {            
+            while (hero.Alive) //solange der held lebt:
             {
                 Console.WriteLine("you encountered a " + monster.Name + ". Prepare to fight!");
                 Console.WriteLine();
                 Console.WriteLine("you have " + hero.Hitpoints + " hitpoints left");
                 Console.WriteLine("'light' for fast attack, 'heavy' for heavy attack");
                 string attack = Console.ReadLine();
+
+                if (attack == "light")
                 {
-                    if (attack == "light")
-                    {
-                        int damage = hero.BaseDamage;
-                        monster.Hitpoints -= damage;
-                        Console.WriteLine("light attack on " + monster.Name + " for " + damage + " damage");
-                    }
-                    else if (attack == "heavy")
-                    {
-                        int damage = hero.BaseDamage + 2;
-                        monster.Hitpoints -= damage;
-                        hero.Hitpoints -= 1;
-                        Console.WriteLine("heavy attack on " + monster.Name + " for " + damage + " damage but at the cost of 1 hitpoint");
-                    }
-                    else if(attack == "use")
-                    {
-                        Use(hero);
-                    }
-                    else
-                    {
-                        Console.WriteLine("you missed ...");
-                    }
+                    int damage = hero.BaseDamage;
+                    monster.Hitpoints -= damage;
+                    Console.WriteLine("light attack on " + monster.Name + " for " + damage + " damage");
                 }
-                if (monster.Hitpoints > 0)
+                else if (attack == "heavy")
+                {
+                    int damage = hero.BaseDamage + 2;
+                    monster.Hitpoints -= damage;
+                    hero.Hitpoints -= 1;
+                    Console.WriteLine("heavy attack on " + monster.Name + " for " + damage + " damage but at the cost of 1 hitpoint");
+                }
+                else if (attack == "use")
+                {
+                    Use(hero);
+                }
+                else
+                {
+                    Console.WriteLine("you missed ...");
+                }
+                if (monster.Hitpoints > 0) //solange das monster lebt
                 {
                     hero.Hitpoints -= monster.BaseDamage;
                     Console.WriteLine(monster.Name + " hits you for " + monster.BaseDamage + " damage");
+                }              
+                else
+                {
+                    Console.Write(monster.Name + " has been slain!.");
+                    if (monster.Item != null)
+                    {
+                        Console.WriteLine(" You take " + monster.Item.Name + " from it's corpse");
+                    }
+                    else
+                    {
+                        Console.WriteLine();
+                    }
+                    hero.Backpack.Add(monster.Item);
+                    monster.Field = null;
+                    Console.WriteLine("continue ...");
+                    Console.ReadLine();                    
+                    Console.Clear();
+                    Headline(hero);
+                    Console.WriteLine(hero.Field.Description);
+                    return;
                 }
-                Console.WriteLine(monster.Name + " has " + monster.Hitpoints + " hitpoints left");
-                Console.WriteLine("continue...");
-                Console.ReadLine();
-                Console.Clear();
-                Headline(hero);
+                IsAlive(hero);
+                if(hero.Alive == true)
+                {
+                    Console.WriteLine(monster.Name + " has " + monster.Hitpoints + " hitpoints left");
+                    Console.WriteLine("continue...");
+                    Console.ReadLine();
+                    Console.Clear();
+                    Headline(hero);
+                }                               
             }
-            Console.Write(monster.Name + " has been slain!.");
-            if (monster.Item != null)
-            {
-                Console.WriteLine(" You take " + monster.Item.Name + " from it's corpse");
-            }
-            else
-            {
-                Console.WriteLine();
-            }
-
-            hero.Backpack.Add(monster.Item);
-            monster.Field = null;
+            return;
+            
         }
-       
+
         public void Headline(Hero hero)
         {
             Console.WriteLine("commands: take, use, backpack");
@@ -310,6 +310,7 @@ namespace Mini_MUD
             Console.WriteLine();
             Console.WriteLine(hero.Field.RoomName);
             Console.WriteLine();
+            // Console.WriteLine(hero.Field.Description); Nein weil die Headline soll immer da sein auch beim kampf
         }
     }
 }
