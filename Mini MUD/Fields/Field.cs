@@ -11,8 +11,8 @@ namespace Mini_MUD
     {
 
         public string RoomName { get; set; }
-        public string Description { get; set; }
-        public Item Item { get; set; }
+        public string Description { get; set; }       
+        public ItemUseable ItemUseable { get; set; }
         public ItemConsumable ItemConsumable { get; set; }
         public Field North { get; set; }
         public Field East { get; set; }
@@ -22,7 +22,7 @@ namespace Mini_MUD
         public Field(string roomName, string description)
         {
             this.RoomName = roomName;
-            this.Description = description;           
+            this.Description = description;
         }
 
         protected Field(string roomName)
@@ -56,9 +56,9 @@ namespace Mini_MUD
 
         public abstract bool Enter();
 
-        public void AddItemToField(Item item)
+        public void AddItemToField(ItemUseable itemUseable)
         {
-            this.Item = item;
+            this.ItemUseable = itemUseable;
         }
         public void PrintFieldContents()  //keine parameter, weil ich kann das Feld ja mit dem Methodenaufruf mitschicken bzw. auf dem Feld aufrufen
         {            

@@ -36,6 +36,10 @@ namespace Mini_MUD
             this.Backpack = new List<Item>();
             this.BackpackMax = 6;
         }
+        public void Death()
+        {
+
+        }
 
         public void Moving(Direction direction) //hier ENTER() Methode!!!!!!!!
         {
@@ -72,14 +76,10 @@ namespace Mini_MUD
                     this.Field = this.Field.West;
                     this.Hitpoints -= 1;
                 }
-            } 
-            
-        }
-
-        public void Attacking()
-        {
+            }
 
         }
+
         public void TakeItemConsumable()
         {
             if (this.Field.ItemConsumable != null)
@@ -94,7 +94,7 @@ namespace Mini_MUD
             }
 
         }
-        
+
         public void UseItem(int position)
         {
             int i = position - 1;
@@ -111,24 +111,92 @@ namespace Mini_MUD
                 }
                 this.Backpack.Remove(this.Backpack[i]);
             }
-            else if(this.Backpack[i].ItemType == ItemType.WEAPON)
+            else if (this.Backpack[i].ItemType == ItemType.WEAPON)
             {
                 this.BaseDamage = this.Backpack[i].Value;
                 Console.WriteLine(this.Backpack[i].Name + " equipped. Base damage is now " + this.Backpack[i].Value);
                 this.Backpack.Remove(Backpack[i]);
             }
-            else if(this.Backpack[i].ItemType == ItemType.KEY)
+            else if (this.Backpack[i].ItemType == ItemType.KEY)  //Wenn schlüssel ist dann prüfe alle angrenzenden türen und sperre sie auf  Wie auf TRUE setzen??
             {
-                
+                if (this.Field.North != null)
+                {
+                    if (this.Backpack[i] == this.Field.North.ItemUseable) // if
+                    {
+                        if (this.Field.North is Door)
+                        {
+                            Door door = this.Field.North as Door;  //muss neue variable machen sonst kann ich nicht damit arbeiten
+                            door.Unlocked = true;           //mit "as" behandeln wir dieses Feld (die neue variable die das Feld darstellt)als Tür
+                            Console.WriteLine(this.Field.North.RoomName + " unlocked... ");
+                            this.Backpack.Remove(this.Backpack[i]);
+                            return;
+                        }
+                    }
+                }
+                if (this.Field.East != null)
+                {
+                    if (this.Backpack[i] == this.Field.East.ItemUseable)
+                    {
+                        if (this.Field.East is Door)
+                        {
+                            Door door = this.Field.East as Door;  //muss neue variable machen sonst kann ich nicht damit arbeiten
+                            door.Unlocked = true;           //mit "as" behandeln wir dieses Feld (die neue variable die das Feld darstellt)als Tür
+                            Console.WriteLine(this.Field.East.RoomName + " unlocked... ");
+                            this.Backpack.Remove(this.Backpack[i]);
+                            return;
+                        }
+                    }
+                }
+                if (this.Field.South != null)
+                {
+                    if (this.Backpack[i] == this.Field.South.ItemUseable)
+                    {
+                        if (this.Field.South is Door)
+                        {
+                            Door door = this.Field.South as Door;  //muss neue variable machen sonst kann ich nicht damit arbeiten
+                            door.Unlocked = true;           //mit "as" behandeln wir dieses Feld (die neue variable die das Feld darstellt)als Tür
+                            Console.WriteLine(this.Field.South.RoomName + " unlocked... ");
+                            this.Backpack.Remove(this.Backpack[i]);
+                            return;
+                        }
+                    }
+                }
+                if (this.Field.West != null)
+                {
+                    if (this.Backpack[i] == this.Field.West.ItemUseable)
+                    {
+                        if (this.Field.West is Door)
+                        {
+                            Door door = this.Field.West as Door;  //muss neue variable machen sonst kann ich nicht damit arbeiten
+                            door.Unlocked = true;           //mit "as" behandeln wir dieses Feld (die neue variable die das Feld darstellt)als Tür
+                            Console.WriteLine(this.Field.West.RoomName + " unlocked... ");
+                            this.Backpack.Remove(this.Backpack[i]);
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("nothing to unlock");
+                }
             }
         }
 
+
         public void PrintBackpack()
         {
-            for (int i = 0; i < Backpack.Count; i++)
+            if(this.Backpack.Count > 0)
             {
-                Console.WriteLine((i + 1) + ". " + Backpack[i].Name);
+                for (int i = 0; i < Backpack.Count; i++)
+                {
+                    Console.WriteLine((i + 1) + ". " + Backpack[i].Name);
+                }
             }
-        }        
+            else
+            {
+                Console.WriteLine("your backpack is empty...");
+            }
+            
+        }
     }
 }

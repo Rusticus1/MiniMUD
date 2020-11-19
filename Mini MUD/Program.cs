@@ -12,8 +12,13 @@ namespace Mini_MUD
         {          
             
             Game dungeon = new Game();
-
-            dungeon.Start();
+            while(true)
+            {
+                dungeon.Start();
+                Console.WriteLine("restart");
+                Console.ReadLine();
+            }
+            
 
 
             //fragen: enter() bool??  und dann moving bei Hero wenn true

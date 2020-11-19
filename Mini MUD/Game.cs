@@ -16,32 +16,37 @@ namespace Mini_MUD
 
         public void Start()
         {
-            ItemUseable KeyGargoyle = new ItemUseable("lion key", 0, ItemType.KEY);
-            ItemUseable KeyEagle = new ItemUseable("eagle key", 0, ItemType.KEY);
+            ItemUseable keyGargoyle = new ItemUseable("lion key", 0, ItemType.KEY);
+            ItemUseable keyEagle = new ItemUseable("eagle key", 0, ItemType.KEY);
             ItemUseable silverSword = new ItemUseable("silver sword", 4, ItemType.WEAPON);
+            ItemUseable bfSword = new ItemUseable("big fucking sword", 5, ItemType.WEAPON);
+
+            ItemConsumable bread = new ItemConsumable("dry bread", 3, ItemType.FOOD);
+            ItemConsumable meat = new ItemConsumable("meat jerky", 6, ItemType.FOOD);
+            ItemConsumable healthPotion = new ItemConsumable("health potion", 15, ItemType.FOOD);
 
             #region Make Fields
             Wall wall = new Wall("wall", "Wall");
 
             Floor a0 = new Floor("Crypt", "the room is dark and filled with Coffins. Half are broken and the remains of their former inhabitants lie scattered on the floor. As your eyes adjust to the darkness you notice numerous pairs of red glowing eyes around you staring at you in hunger ...");
-            Floor a1 = new Floor("Flooded room", "this room has been flooded. You cannot see how deep the water is");
-            Wall a2 = new Wall("Wall", "you cannot go through here");
-            Floor a3 = new Floor("Gargoyle door", "an enormous door shaped like a gargoyle");
-            Floor a4 = new Floor("a4", "notext");
-            Floor a5 = new Floor("Torture chamber", "upon seein the devices in this room you can clearly see what it was used for");
+            Water a1 = new Water("Flooded room", "this room has been flooded. You cannot see how deep the water is");
+            Floor a2 = new Floor("Kights Chambers", "this has a large dinnertable in the center and dozens of shields and weapons decorate the surrounding walls");
+            Door a3 = new Door("Gargoyle door", "an enormous door shaped like a gargoyle");
+            Floor a4 = new Floor("Battlefield", "a large battle must have been fought here. the room is filled with dead bodies of creatures and men alike... you must be getting close");
+            Floor a5 = new Floor("Wizards tower", "you slowly walk up a spiral staircase to find a small room filled with books and jars full of unidentifiable inlaid animals");
 
             Floor b0 = new Floor("Abandoned chapel", "rows upon rows of benches bofore an altar. This must have been used as a Chapel");
             Floor b1 = new Floor("Courtyard", "you step into a courtyard. The faint light of a full moon shines through a foggy and otherwise pitch black night");
             Floor b2 = new Floor("North hall", "you notice the skeletal remains of a warrior cowering in a corner firmly holding his rusted old sword. He must have died ages ago");
-            Wall b3 = new Wall("Wall", "wall");
-            Floor b4 = new Floor("b4", "notext");
+            Floor b3 = new Floor("Empty hall", "this hall might have been used for dust collection...");
+            Floor b4 = new Floor("Torture chamber", "upon seein the devices in this room you can clearly see what it was used for");
             Floor b5 = new Floor("b5", "notext");
 
             Floor c0 = new Floor("Storage", "the room is filled with old statues and broken furniture...");
             Floor c1 = new Floor("West hall", "a large but sparsly decorated hall");
-            Floor c2 = new Floor("Hallway", "you walk through a hallway with a crossing");
-            Door c3 = new Door("Eagle door", "you stand before a large wodden door with a Eagle emblem. It looks like it has been hastily barricaded from the outside in an attempt to keep something locked inside...", KeyEagle);
-            Floor c4 = new Floor("c4", "notext");
+            Floor c2 = new Floor("Hallway", "to the east you see a large wodden door with an eagle emblem. It looks like it has been hastily barricaded from the outside in an attempt to keep something locked inside..");
+            Door c3 = new Door("Eagle door", "you see crushed bodies and limbs scattered all over the floor ... something big must have done this");
+            Floor c4 = new Floor("Corridor", "a tight corridor with a crossing in the center");
             Floor c5 = new Floor("Winecellar", "a room filled with old barrels used to store whine");
 
             Floor d0 = new Floor("Crumbling corner", "the walls to the outside world are cracked and moonlight illuminates the room");
@@ -51,21 +56,22 @@ namespace Mini_MUD
             Floor d4 = new Floor("Wall", "notext");
             Floor d5 = new Floor("Treasure Room", "you step into a room filled with enough treasure to buy a castle... maybe you could come back here with a larger backpack.");
             #endregion
-                       
+
+            c3.AddItemUseable(keyEagle);
 
             //Methode für zuweisung???
             #region setNeightbours
             a0.SetNeightbours(null, a1, b0, null);
             a1.SetNeightbours(null, a2, b1, a0);
-            a2.SetNeightbours(null, a3, b2, a1);
-            a3.SetNeightbours(null, a4, b3, wall);
+            a2.SetNeightbours(null, null, b2, a1);
+            a3.SetNeightbours(null, a4, b3, null);
             a4.SetNeightbours(null, a5, b4, a3);
             a5.SetNeightbours(null, null, b5, a4);
 
             b0.SetNeightbours(a0, b1, c0, null);
             b1.SetNeightbours(a1, b2, c1, b0);
-            b2.SetNeightbours(a2, b3, c2, b1);
-            b3.SetNeightbours(a3, b4, c3, b2);
+            b2.SetNeightbours(a2, null, c2, b1);
+            b3.SetNeightbours(null, b4, c3, null);
             b4.SetNeightbours(a4, b5, c4, b3);
             b5.SetNeightbours(a5, null, c5, b4);
 
@@ -78,26 +84,30 @@ namespace Mini_MUD
 
             d0.SetNeightbours(c0, d1, null, null);
             d1.SetNeightbours(c1, d2, null, d0);
-            d2.SetNeightbours(c2, d3, null, d1);
-            d3.SetNeightbours(c3, d4, null, d2);
+            d2.SetNeightbours(c2, null, null, d1);
+            d3.SetNeightbours(c3, d4, null, null);
             d4.SetNeightbours(c4, d5, null, d3);
             d5.SetNeightbours(c5, null, null, d4);
 
             List<Field> fieldlist = new List<Field> { a0, a1, a2, a3, a4, a5, b0, b1, b2, b3, b4, b5, c0, c1, c2, c3, c4, c5, d0, d1, d2, d3, d4, d5 };
             #endregion                       
 
-            a0.AddItemToField(KeyEagle);
+            //a0.AddItemToField(keyEagle);
             #region Monsters
             Monster goblin = new Monster("Goblin", 10, 3, c0, silverSword);
-            Monster ghoul = new Monster("Ghoul", 16, 2, a0, KeyEagle);
-            List<Monster> monsters = new List<Monster>() { goblin, ghoul };
-            #endregion
+            Monster ghoul = new Monster("Ghoul", 16, 2, a0, keyEagle);
+            Monster golem = new Monster("Golem", 20, 3, a3, keyGargoyle);
+            Monster skeleton = new Monster("Skeleton", 13, 3, b4, healthPotion);
+            Monster gargoyle = new Monster("Gargoyle", 30, 4, a3, null);
 
+            List<Monster> monsters = new List<Monster>() { goblin, ghoul, golem, skeleton };
+            #endregion
+            
 
             Hero hero = new Hero("Warrior", 20, fieldlist, d2);
 
             Console.WriteLine("...you enter the main hall through a large, heavy wodden door");
-            Console.WriteLine("As the heavy door closes shut behind you it takes a moment for your eyes to adjust to the darkness");            
+            Console.WriteLine("As the heavy door closes shut behind you it takes a moment for your eyes to adjust to the darkness");
             Console.ReadLine();
 
             //schlüssel funktionieren wie??  bei türe das inventar durchgehen? aber wie held zur türe geben
@@ -109,7 +119,7 @@ namespace Mini_MUD
             //kann ich alle arten von items in den rucksack packen? SOLVED
             //Schwert wird immer wie Itemtype.Food behandelt und gegessen!!  SOLVED (itemType tippfehler! groß und kleinschreibung beachten!!!!!!!!)
             //vergleich  (items)  wenn item == 'class' itemConsumable   geht das???
-            
+
 
             while (hero.Hitpoints > 0)
             {
@@ -118,46 +128,47 @@ namespace Mini_MUD
                 //Console.WriteLine(hero.Field.RoomName);    
                 Console.WriteLine(hero.Field.Description);
                 Encounter(hero, monsters);
-                
+
                 hero.Field.PrintFieldContents();
                 Console.WriteLine();
                 Console.WriteLine(hero.Hitpoints + " hitpoints left");
-                Console.WriteLine("What do you want to do...");                
+                Console.WriteLine("What do you want to do...");
                 Console.WriteLine();
                 hero.Field.PrintFieldMoves();  //ich stehe auf dem Feld deshalb muss ich des nicht mitgeben               
-                
+
                 string input = Console.ReadLine().ToLower();
-                
+
                 //Richtungen sind einfacher mit enums
                 if (input == "north")    //check if move possible Methode??  mit bool?  //wenn in neuen raum gemoved ist dann details
                 {
                     hero.Moving(Direction.NORTH); // Enter() Methode in Moving integriert.             
                 }
-                else if(input == "east")
+                else if (input == "east")
                 {
                     hero.Moving(Direction.EAST);
                 }
-                else if(input == "south")
+                else if (input == "south")
                 {
                     hero.Moving(Direction.SOUTH);
                 }
-                else if(input == "west")
+                else if (input == "west")
                 {
                     hero.Moving(Direction.WEST);
-                }              
+                }
                 else
                 {
-                    if(input == "take")
+                    if (input == "take")
                     {
                         hero.TakeItemConsumable();
                     }
-                    else if(input == "backpack")
+                    else if (input == "backpack")
                     {
                         hero.PrintBackpack();
                     }
-                    else if(input == "use")
+                    else if (input == "use")
                     {
-                        if (hero.Backpack.Count > 0)
+                        Use(hero);
+                        /*if (hero.Backpack.Count > 0)
                         {
                             hero.PrintBackpack();
                             Console.WriteLine("which item do you want to use");
@@ -174,6 +185,12 @@ namespace Mini_MUD
                         {
                             Console.WriteLine("your backpack is empty...");
                         }
+                        */
+                    }
+                    //CHEATS
+                    else if (input == "eaglekey")
+                    {
+                        hero.Backpack.Add(keyEagle);
                     }
                     else
                     {
@@ -182,49 +199,85 @@ namespace Mini_MUD
                     Console.WriteLine("continue ... ");
                     Console.ReadLine();
                 }
+            }
+            if (hero.Hitpoints <= 0)
+            {
+                hero.Death();
                 // hero.EnterRoom();               
-            }                          
+            }
         }
         //sobad man einen raum betritt muss geprüft werden ob ein Monster drinnen ist
+        public void Use(Hero hero)
+        {
+            if (hero.Backpack.Count > 0)
+            {
+                hero.PrintBackpack();
+                Console.WriteLine("which item do you want to use");
+                //geht das einfaher??
+                string useS = ""; // damit frägt er so lange bis eingabe ein int ist
+                int use = 0;
+                do
+                {
+                    useS = Console.ReadLine();
+                } while (!int.TryParse(useS, out use));
+                hero.UseItem(use);
+            }
+            /*else
+            {
+                Console.WriteLine("your backpack is empty...");
+            } */
+        }
+        public void IsDead()
+        {
+            Console.Clear();
+            Console.WriteLine("you collapse and fall on the ground ...");
+            Console.WriteLine("your story will end as a lifless corpse among innumerable others whose names will never be remembered ...");
+            Console.WriteLine(" G A M E  O V E R ");
+            return;
+        }
         public void Encounter(Hero hero, List<Monster> monsters)
         {
-            foreach(Monster m in monsters)
+            foreach (Monster m in monsters)
             {
-                if(hero.Field == m.Field)
-                {                    
+                if (hero.Field == m.Field)
+                {
                     Combat(hero, m);
                 }
             }
         }
         public void Combat(Hero hero, Monster monster) //fast oder heavy schreiben. bei rechtschreibfehler = "missed"
         {
-            while(monster.Hitpoints > 0)
-            {                
+            while (monster.Hitpoints > 0)
+            {
                 Console.WriteLine("you encountered a " + monster.Name + ". Prepare to fight!");
                 Console.WriteLine();
-                Console.WriteLine("you have " +hero.Hitpoints + " left");
+                Console.WriteLine("you have " + hero.Hitpoints + " hitpoints left");
                 Console.WriteLine("'light' for fast attack, 'heavy' for heavy attack");
                 string attack = Console.ReadLine();
-                {                    
+                {
                     if (attack == "light")
                     {
                         int damage = hero.BaseDamage;
                         monster.Hitpoints -= damage;
                         Console.WriteLine("light attack on " + monster.Name + " for " + damage + " damage");
                     }
-                    else if(attack == "heavy")
+                    else if (attack == "heavy")
                     {
                         int damage = hero.BaseDamage + 2;
                         monster.Hitpoints -= damage;
                         hero.Hitpoints -= 1;
-                        Console.WriteLine("heavy attack on " + monster.Name + " for " + damage + " damage but at the cost of 1 Hitpoint");
+                        Console.WriteLine("heavy attack on " + monster.Name + " for " + damage + " damage but at the cost of 1 hitpoint");
+                    }
+                    else if(attack == "use")
+                    {
+                        Use(hero);
                     }
                     else
                     {
                         Console.WriteLine("you missed ...");
                     }
                 }
-                if(monster.Hitpoints > 0 )
+                if (monster.Hitpoints > 0)
                 {
                     hero.Hitpoints -= monster.BaseDamage;
                     Console.WriteLine(monster.Name + " hits you for " + monster.BaseDamage + " damage");
@@ -235,14 +288,20 @@ namespace Mini_MUD
                 Console.Clear();
                 Headline(hero);
             }
-            Console.WriteLine(monster.Name + " has been slain!. You take " + monster.Item.Name + " from it's corpse");
+            Console.Write(monster.Name + " has been slain!.");
+            if (monster.Item != null)
+            {
+                Console.WriteLine(" You take " + monster.Item.Name + " from it's corpse");
+            }
+            else
+            {
+                Console.WriteLine();
+            }
+
             hero.Backpack.Add(monster.Item);
             monster.Field = null;
         }
-        public void UnlockDoor()
-        {
-
-        }
+       
         public void Headline(Hero hero)
         {
             Console.WriteLine("commands: take, use, backpack");

@@ -9,9 +9,9 @@ namespace Mini_MUD.Life
         public string Name { get; set; }
         public int Hitpoints { get; set; }
         public int BaseDamage { get; set; }
-        public ItemUseable Item { get; set; }
+        public Item Item { get; set; }
         public Field Field { get; set; }
-        public Monster(string name, int hitpoints, int baseDamage, Field startfield, ItemUseable itemdrop)
+        public Monster(string name, int hitpoints, int baseDamage, Field startfield, Item itemdrop)
         {
             this.Name = name;
             this.Hitpoints = hitpoints;

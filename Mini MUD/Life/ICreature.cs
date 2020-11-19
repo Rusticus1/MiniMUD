@@ -6,6 +6,6 @@ namespace Mini_MUD
 {
     interface ICreature
     {
-        public void Attacking();
+        
     }
 }
