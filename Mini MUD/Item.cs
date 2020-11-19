@@ -9,6 +9,7 @@ namespace Mini_MUD
         FOOD,
         WEAPON,
         KEY,
+        SPELL,
     }
     public abstract class Item
     {

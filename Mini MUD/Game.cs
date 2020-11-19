@@ -104,8 +104,12 @@ namespace Mini_MUD
             #endregion
 
 
-            Hero hero = new Hero("Warrior", 20, fieldlist, d2);
+            Hero warrior = new Hero("warrior", 20, 3, fieldlist, d2);
+            Hero mage = new Hero("mage", 16, 2, fieldlist, d2);
 
+            List<Hero> heroes = new List<Hero>() { warrior, mage };
+
+            //Hero hero = PickHero(heroes);
             Console.WriteLine("...you enter the main hall through a large, heavy wodden door");
             Console.WriteLine("As the heavy door closes shut behind you it takes a moment for your eyes to adjust to the darkness");
             Console.ReadLine();
@@ -118,17 +122,17 @@ namespace Mini_MUD
 
             //kann ich alle arten von items in den rucksack packen? SOLVED
             //Schwert wird immer wie Itemtype.Food behandelt und gegessen!!  SOLVED (itemType tippfehler! groß und kleinschreibung beachten!!!!!!!!)
-            //vergleich  (items)  wenn item == 'class' itemConsumable   geht das???
-
-            while(hero.Alive == true)  // 
-            {                
+            //vergleich  (items)  wenn item == 'class' itemConsumable   geht das???  
+            Hero hero = warrior;
+            while (hero.Alive == true)  // 
+            {
                 Console.Clear();
-                Headline(hero);               
+                Headline(hero);
                 Console.WriteLine(hero.Field.Description);  //muss bei encounter -> combat nochmal geprintet werden für die ausgabe, sonst ist es weg nach clear()
                 Encounter(hero, monsters);
 
                 IsAlive(hero);  //schleife muss beendet werden bei tod!!!
-                
+
                 hero.Field.PrintFieldContents();
                 Console.WriteLine();
                 Console.WriteLine(hero.Hitpoints + " hitpoints left");
@@ -185,7 +189,7 @@ namespace Mini_MUD
                     Console.ReadLine();
                 }
 
-            } 
+            }
             Console.Clear();
             Console.WriteLine("you collapse and fall on the ground ...");
             Console.WriteLine("your story will end as a lifless corpse among innumerable others whose names will never be remembered ...");
@@ -220,7 +224,7 @@ namespace Mini_MUD
             if (hero.Hitpoints <= 0)
             {
                 hero.Alive = false;
-            }            
+            }
         }
         public void Encounter(Hero hero, List<Monster> monsters)
         {
@@ -233,7 +237,7 @@ namespace Mini_MUD
             }
         }
         public void Combat(Hero hero, Monster monster) //light oder heavy schreiben. bei rechtschreibfehler = "missed"
-        {            
+        {
             while (hero.Alive) //solange der held lebt:
             {
                 Console.WriteLine("you encountered a " + monster.Name + ". Prepare to fight!");
@@ -267,7 +271,7 @@ namespace Mini_MUD
                 {
                     hero.Hitpoints -= monster.BaseDamage;
                     Console.WriteLine(monster.Name + " hits you for " + monster.BaseDamage + " damage");
-                }              
+                }
                 else
                 {
                     Console.Write(monster.Name + " has been slain!.");
@@ -282,26 +286,43 @@ namespace Mini_MUD
                     hero.Backpack.Add(monster.Item);
                     monster.Field = null;
                     Console.WriteLine("continue ...");
-                    Console.ReadLine();                    
+                    Console.ReadLine();
                     Console.Clear();
                     Headline(hero);
                     Console.WriteLine(hero.Field.Description);
                     return;
                 }
                 IsAlive(hero);
-                if(hero.Alive == true)
+                if (hero.Alive == true)
                 {
                     Console.WriteLine(monster.Name + " has " + monster.Hitpoints + " hitpoints left");
                     Console.WriteLine("continue...");
                     Console.ReadLine();
                     Console.Clear();
                     Headline(hero);
-                }                               
+                }
             }
             return;
-            
-        }
 
+        }
+        /* public Hero PickHero(List<Hero> hero)
+        {
+
+            int i = hero.Count;
+            Console.WriteLine("pick a hero");
+            foreach (Hero h in hero)
+            {
+                Console.WriteLine(" " + h.Name);
+            }            
+            while (true)
+            {
+                string input = Console.ReadLine();
+                if (input == hero[i].Name)
+                {
+                    return hero[i];
+                }
+            }       
+        }*/
         public void Headline(Hero hero)
         {
             Console.WriteLine("commands: take, use, backpack");

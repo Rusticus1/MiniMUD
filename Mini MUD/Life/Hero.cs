@@ -25,13 +25,12 @@ namespace Mini_MUD
         public List<Field> Fieldlist { get; set; }
         public bool Alive { get; set; }
 
-        public Hero(string name, int hitpoints, List<Field> fieldlist, Field startfield)
+        public Hero(string name, int hitpoints, int baseDamage, List<Field> fieldlist, Field startfield)
         {
             this.Name = name;
             this.Hitpoints = hitpoints;
-            this.HitpointsMax = hitpoints;
-            //this.Energy = 10;
-            this.BaseDamage = 3;
+            this.HitpointsMax = hitpoints;     
+            this.BaseDamage = baseDamage;
             this.Fieldlist = fieldlist;
             this.Field = startfield;
             this.Backpack = new List<Item>();
