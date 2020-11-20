@@ -20,14 +20,15 @@ namespace Mini_MUD
             //Items:
             ItemUseable keyGargoyle = new ItemUseable("gargoyle key", 0, ItemType.KEY);
             ItemUseable keyEagle = new ItemUseable("eagle key", 0, ItemType.KEY);
-            ItemUseable silverSword = new ItemUseable("silver sword", 4, ItemType.WEAPON);
-            ItemUseable bfSword = new ItemUseable("big fucking sword", 5, ItemType.WEAPON);
+            ItemUseable silverSword = new ItemUseable("silver sword", 1, ItemType.WEAPON);
+            ItemUseable bfSword = new ItemUseable("big fucking sword", 2, ItemType.WEAPON);
             ItemUseable gargoyleTrophy = new ItemUseable("gargoyle head trophy", 0, ItemType.VICTORY);
             ItemUseable scrollFireball = new ItemUseable("scroll of fireball", 10, ItemType.SCROLL);
 
             ItemUseable spellChargedbolt = new ItemUseable("chargedbolt (4)", 4, ItemType.SPELL);
             ItemUseable spellFirebolt = new ItemUseable("firebolt (6)", 6, ItemType.SPELL);
             ItemUseable spellIcebolt = new ItemUseable("icebolt (1)", 1, ItemType.SPELL); //value wird dauerhaft von monster abgezogen bis minimumschaden
+           
 
             List<Item> spellbook = new List<Item>() { spellChargedbolt, spellFirebolt, spellIcebolt };
 
@@ -120,16 +121,13 @@ namespace Mini_MUD
             List<Monster> monsters = new List<Monster>() { goblin, ghoul, golem, skeleton, hoemunculus, leprechaun, gargoyle };
             #endregion
 
-
-            Hero warrior = new Hero("warrior", 20, 4, 3, fieldlist, d2);
-            Hero mage = new Hero("mage", 16, 8, 2, fieldlist, d2);
-            mage.AddSpellbook(spellbook);
+            Warrior warrior = new Warrior("warrior", 20, 4, fieldlist, d2);
+            Mage mage = new Mage("mage", 16, 8, 2,spellbook , fieldlist, d2);
+            
 
             List<Hero> heroes = new List<Hero>() { warrior, mage };
 
             //Hero hero = PickHero(heroes);
-
-            //kann man spiel für andere zugänglich machen????
 
             //use() verwenden um im Door room door aufzusperren??  SOLVED
             //schlüssel verwenden und himmelsrichtung auswählen SOLVED
@@ -137,12 +135,17 @@ namespace Mini_MUD
             //Schwert wird immer wie Itemtype.Food behandelt und gegessen!!  SOLVED  (itemType tippfehler! groß und kleinschreibung beachten!!!!!!!!)
             //vergleich  (items)  wenn item == 'class' itemConsumable   geht das???  SOLVED
 
-            //use()backpack beste möglichkeit damit eingabe richtig sein muss???
             //wenn monster hero tötet ist nicht gleich fertig. muss immer noch zuerst einen move machen?? SOLVED
             //wie kann ich ganz aus Game()raus bzw. direkt gameover machen   SOLVED
 
+            //use()backpack beste möglichkeit damit eingabe richtig sein muss???
+
+            //wie kann ich die Tür mit einem hero verbinden? bzw von dort daten holen ohne Door(Hero) mitzugeben.
+
             //wenn die die Wahl habe (zB spellbook, Hero auswahl) will ich schreiben können was ich will. wenn ich das spellbook
             //erweitere, sollte es automatisch die methode erweitern. wie?
+            //kann man spiel für andere zugänglich machen????
+
             Hero hero = PickHero(heroes);
                         
             hero.Backpack.Add(healthPotion);
@@ -152,23 +155,27 @@ namespace Mini_MUD
             Console.WriteLine("...you enter the main hall through a large, heavy wodden door");
             Console.WriteLine("As the heavy door closes shut behind you it takes a moment for your eyes to adjust to the darkness");
             Console.ReadLine();
-            while (hero.Alive == true)  // 
+            while (hero.Alive == true)  
             {
                 VictoryCondition(hero);
                 Console.Clear();
                 Headline(hero);
                 Console.WriteLine(hero.Field.Description);  //muss bei encounter -> combat nochmal geprintet werden für die ausgabe, sonst ist es weg nach clear()
                 Encounter(hero, monsters);
-                 //schleife muss beendet werden bei tod!!!
+                //schleife muss beendet werden bei tod!!!
                 //billige lösung: ...
                 if (hero.Alive == false)
                 {
                     break;
                 }
                 hero.Field.PrintFieldContents();
+                
                 Console.WriteLine();
                 Console.WriteLine(hero.Hitpoints + " hitpoints left");
-
+                if (hero is Mage)
+                {
+                    Console.WriteLine(hero.Mana + " mana left");
+                }
                 Console.WriteLine("What do you want to do...");
                 Console.WriteLine();
                 hero.Field.PrintFieldMoves();  //ich stehe auf dem Feld deshalb muss ich des nicht mitgeben               
@@ -305,30 +312,7 @@ namespace Mini_MUD
                 Console.WriteLine("your backpack is empty...");
             } */
         }
-        public void Cast(Hero hero)
-        {
-            if (hero.Spellbook.Count > 0)
-            {
-                hero.PrintSpellbook();
-                Console.WriteLine("which spell do you want to cast? or go 'back'");
-                //geht das einfacher??
-                string useS = ""; // damit frägt er so lange bis eingabe ein int ist
-                int use = 0;
-                do
-                {
-                    useS = Console.ReadLine();
-                    if (useS == "back")
-                    {
-                        return;
-                    }
-                } while (!int.TryParse(useS, out use));
-                hero.UseSpell(use);
-            }
-            else
-            {
-                Console.WriteLine("you do not know any spells ...");
-            } 
-        }
+        
         public void IsAlive(Hero hero) //einfache prüfung mit bool ob Hero lebt oder tot ist
         {
             if (hero.Hitpoints <= 0)
@@ -353,15 +337,20 @@ namespace Mini_MUD
                 Console.WriteLine("you encountered a " + monster.Name + ". Prepare to fight!");
                 Console.WriteLine();
                 Console.WriteLine("you have " + hero.Hitpoints + " hitpoints left");
-                if(hero.Name == "mage")
+                if(hero is Mage)
                 {
                     Console.WriteLine("you have " + hero.Mana + " mana left");                    
-                }               
+                }                         
                 Console.Write("'light' for light attack, 'heavy' for heavy attack");
                 if(hero.Name == "mage")
                 {
                     Console.WriteLine(", 'cast' to use spells");
                 }
+                else
+                {
+                    Console.WriteLine();
+                }
+
                 string attack = Console.ReadLine();
 
                 if (attack == "light")
@@ -378,10 +367,14 @@ namespace Mini_MUD
                     Console.WriteLine("heavy attack on " + monster.Name + " for " + damage + " damage but at the cost of 1 hitpoint");
                 }
                 else if(attack == "cast")
-                {                    
-                    Cast(hero);
-                    monster.Hitpoints -= hero.SpellDamage;
-                    hero.SpellDamage = 0;
+                {   
+                    if(hero is Mage)
+                    {
+                        Cast(hero as Mage);
+                        monster.Hitpoints -= hero.SpellDamage;
+                        hero.SpellDamage = 0;
+                    }
+                   
                 }
                 else if (attack == "use")
                 {
@@ -432,6 +425,30 @@ namespace Mini_MUD
             }
             return;
 
+        }
+        public void Cast(Mage hero) //cast für die auswahl aus dem sellbook
+        {
+            if (hero.Spellbook.Count > 0)
+            {
+                hero.PrintSpellbook();
+                Console.WriteLine("which spell do you want to cast? or go 'back'");
+                //geht das einfacher??
+                string useS = ""; // damit frägt er so lange bis eingabe ein int ist
+                int use = 0;
+                do
+                {
+                    useS = Console.ReadLine();
+                    if (useS == "back")
+                    {
+                        return;
+                    }
+                } while (!int.TryParse(useS, out use));
+                hero.UseSpell(use);
+            }
+            else
+            {
+                Console.WriteLine("you do not know any spells ...");
+            }
         }
         public Hero PickHero(List<Hero> hero)
         {
