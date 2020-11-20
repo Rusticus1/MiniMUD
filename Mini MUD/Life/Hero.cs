@@ -17,28 +17,33 @@ namespace Mini_MUD
         public string Name { get; set; }
         public int Hitpoints { get; set; }
         public int HitpointsMax { get; set; }
-        //public int Energy { get; set; }
+        public int Mana { get; set; }
+        public int ManaMax { get; set; }
         public int BaseDamage { get; set; }
         public int SpellDamage { get; set; }
         public List<Item> Backpack { get; set; }
+        public List<Item> Spellbook { get; set; }
         public int BackpackMax { get; set; }
         public Field Field { get; set; }
         public List<Field> Fieldlist { get; set; }
         public bool Alive { get; set; }
 
-        public Hero(string name, int hitpoints, int baseDamage, List<Field> fieldlist, Field startfield)
+        public Hero(string name, int hitpoints, int mana, int baseDamage, List<Field> fieldlist, Field startfield)
         {
             this.Name = name;
             this.Hitpoints = hitpoints;
-            this.HitpointsMax = hitpoints;     
+            this.HitpointsMax = hitpoints;
+            this.Mana = mana;
+            this.ManaMax = mana;
             this.BaseDamage = baseDamage;
             this.Fieldlist = fieldlist;
             this.Field = startfield;
             this.Backpack = new List<Item>();
+            this.Spellbook = new List<Item>();
             this.BackpackMax = 10;
             this.Alive = true;
         }
-      
+
 
         public void Moving(Direction direction) //hier ENTER() Methode!!!!!!!!
         {
@@ -77,6 +82,22 @@ namespace Mini_MUD
                 }
             }
         }
+        public void Manareg()
+        {
+            if (this.Mana < this.ManaMax)
+            {
+                this.Mana += 1;
+                Console.WriteLine("1 mana regenerated");
+            }
+            if (this.Mana > this.ManaMax)
+            {
+                this.Mana = this.ManaMax;
+            }
+        }
+        public void AddSpellbook(List<Item> spellbook)
+        {
+            this.Spellbook = spellbook;
+        }
 
         public void TakeItemConsumable()
         {
@@ -91,8 +112,21 @@ namespace Mini_MUD
                 Console.WriteLine("nothing here to take...");
             }
         }
-
-        public void UseItem(int position)
+        public void UseSpell(int position)
+        {
+            int i = position - 1;
+            if(this.Spellbook[i].Value <= this.Mana)
+            {
+                this.SpellDamage = this.Spellbook[i].Value;
+                Console.WriteLine(this.Spellbook[i].Name + " cast for " + this.Spellbook[i].Value + " damage");
+                this.Mana -= this.Spellbook[i].Value;
+            }
+            else
+            {
+                Console.WriteLine("not enough mana!");
+            }
+        }
+        public void UseItem(int position) 
         {
             int i = position - 1;
             //this.Backpack[i].consume();
@@ -101,7 +135,7 @@ namespace Mini_MUD
             if (this.Backpack[i].ItemType == ItemType.FOOD)   //kann man mit == schauen "ist objekt?"
             {
                 this.Hitpoints += this.Backpack[i].Value;
-                Console.WriteLine(this.Backpack[i].Name + " consumed and " + this.Backpack[position - 1].Value + " hitpoints restored");
+                Console.WriteLine(this.Backpack[i].Name + " consumed and " + this.Backpack[i].Value + " hitpoints restored");
                 if (this.Hitpoints > HitpointsMax)
                 {
                     this.Hitpoints = HitpointsMax;
@@ -114,12 +148,14 @@ namespace Mini_MUD
                 Console.WriteLine(this.Backpack[i].Name + " equipped. Base damage is now " + this.Backpack[i].Value);
                 this.Backpack.Remove(Backpack[i]);
             }
-            else if (this.Backpack[i].ItemType == ItemType.SPELL)
+            else if (this.Backpack[i].ItemType == ItemType.SCROLL)
             {
                 this.SpellDamage = this.Backpack[i].Value;
                 Console.WriteLine(this.Backpack[i].Name + " cast for " + this.Backpack[i].Value + " damage");
                 this.Backpack.Remove(Backpack[i]);
             }
+            // spellbook use hier integrieren 
+            
             else if (this.Backpack[i].ItemType == ItemType.KEY)  //Wenn schlüssel ist dann prüfe alle angrenzenden türen und sperre sie auf  Wie auf TRUE setzen??
             {
                 if (this.Field.North != null)
@@ -184,11 +220,9 @@ namespace Mini_MUD
                 }
             }
         }
-
-
         public void PrintBackpack()
         {
-            if(this.Backpack.Count > 0)
+            if (this.Backpack.Count > 0)
             {
                 for (int i = 0; i < Backpack.Count; i++)
                 {
@@ -199,7 +233,21 @@ namespace Mini_MUD
             {
                 Console.WriteLine("your backpack is empty...");
             }
-            
+
+        }
+        public void PrintSpellbook()
+        {
+            if (this.Spellbook.Count > 0)
+            {
+                for (int i = 0; i < Spellbook.Count; i++)
+                {
+                    Console.WriteLine((i + 1) + ". " + Spellbook[i].Name);
+                }
+            }
+            else
+            {
+                Console.WriteLine("your spellbook is empty...");
+            }
         }
     }
 }

@@ -17,17 +17,25 @@ namespace Mini_MUD
 
         public void Start()
         {
+            //Items:
             ItemUseable keyGargoyle = new ItemUseable("gargoyle key", 0, ItemType.KEY);
             ItemUseable keyEagle = new ItemUseable("eagle key", 0, ItemType.KEY);
             ItemUseable silverSword = new ItemUseable("silver sword", 4, ItemType.WEAPON);
             ItemUseable bfSword = new ItemUseable("big fucking sword", 5, ItemType.WEAPON);
             ItemUseable gargoyleTrophy = new ItemUseable("gargoyle head trophy", 0, ItemType.VICTORY);
-            ItemUseable scrollFirebolt = new ItemUseable("scroll of firebolt", 10, ItemType.SPELL);
+            ItemUseable scrollFireball = new ItemUseable("scroll of fireball", 10, ItemType.SCROLL);
 
-            ItemConsumable bread = new ItemConsumable("dry bread", 3, ItemType.FOOD);
+            ItemUseable spellChargedbolt = new ItemUseable("chargedbolt (4)", 4, ItemType.SPELL);
+            ItemUseable spellFirebolt = new ItemUseable("firebolt (6)", 6, ItemType.SPELL);
+            ItemUseable spellIcebolt = new ItemUseable("icebolt (1)", 1, ItemType.SPELL); //value wird dauerhaft von monster abgezogen bis minimumschaden
+
+            List<Item> spellbook = new List<Item>() { spellChargedbolt, spellFirebolt, spellIcebolt };
+
+            ItemConsumable bread = new ItemConsumable("dry bread", 3, ItemType.FOOD); //essen wird bei feld zufällig generiert
             ItemConsumable meat = new ItemConsumable("meat jerky", 6, ItemType.FOOD);
             ItemConsumable healthPotion = new ItemConsumable("health potion", 15, ItemType.FOOD);
 
+            //Fields:
             #region Make Fields
             Wall wall = new Wall("wall", "Wall");
 
@@ -104,7 +112,7 @@ namespace Mini_MUD
             Monster ghoul = new Monster("Ghoul", 16, 2, a0, keyEagle);
             Monster golem = new Monster("Golem", 20, 3, d4, bfSword);
             Monster skeleton = new Monster("Skeleton", 13, 3, b4, healthPotion);
-            Monster hoemunculus = new Monster("Hoemunculus", 8, 4, a5, scrollFirebolt);
+            Monster hoemunculus = new Monster("Hoemunculus", 8, 4, a5, scrollFireball);
             Monster leprechaun = new Monster("Leprechaun", 5, 5, d5, keyGargoyle);
             Monster gargoyle = new Monster("Gargoyle", 30, 4, a3, gargoyleTrophy);
             //Monster der liste hinzufügen damit Encounter() geprüft werden kann.
@@ -113,28 +121,37 @@ namespace Mini_MUD
             #endregion
 
 
-            Hero warrior = new Hero("warrior", 20, 3, fieldlist, d2);
-            Hero mage = new Hero("mage", 16, 2, fieldlist, d2);
+            Hero warrior = new Hero("warrior", 20, 4, 3, fieldlist, d2);
+            Hero mage = new Hero("mage", 16, 8, 2, fieldlist, d2);
+            mage.AddSpellbook(spellbook);
 
             List<Hero> heroes = new List<Hero>() { warrior, mage };
 
             //Hero hero = PickHero(heroes);
+
+            //kann man spiel für andere zugänglich machen????
+
+            //use() verwenden um im Door room door aufzusperren??  SOLVED
+            //schlüssel verwenden und himmelsrichtung auswählen SOLVED
+
+            //Schwert wird immer wie Itemtype.Food behandelt und gegessen!!  SOLVED  (itemType tippfehler! groß und kleinschreibung beachten!!!!!!!!)
+            //vergleich  (items)  wenn item == 'class' itemConsumable   geht das???  SOLVED
+
+            //use()backpack beste möglichkeit damit eingabe richtig sein muss???
+            //wenn monster hero tötet ist nicht gleich fertig. muss immer noch zuerst einen move machen?? SOLVED
+            //wie kann ich ganz aus Game()raus bzw. direkt gameover machen   SOLVED
+
+            //wenn die die Wahl habe (zB spellbook, Hero auswahl) will ich schreiben können was ich will. wenn ich das spellbook
+            //erweitere, sollte es automatisch die methode erweitern. wie?
+            Hero hero = PickHero(heroes);
+                        
+            hero.Backpack.Add(healthPotion);
+            Console.Clear();
+
+            Console.WriteLine("you are a " + hero.Name);
             Console.WriteLine("...you enter the main hall through a large, heavy wodden door");
             Console.WriteLine("As the heavy door closes shut behind you it takes a moment for your eyes to adjust to the darkness");
             Console.ReadLine();
-
-           
-            //use() verwenden um im Door room door aufzusperren??  
-            //schlüssel verwenden und himmelsrichtung auswählen
-
-            //Schwert wird immer wie Itemtype.Food behandelt und gegessen!!  SOLVED (itemType tippfehler! groß und kleinschreibung beachten!!!!!!!!)
-            //vergleich  (items)  wenn item == 'class' itemConsumable   geht das???  
-
-            //use()backpack möglichkeit zum abbrechen bzw. falls falsche eingabe ist.
-            //wenn monster hero tötet ist nicht gleich fertig. muss immer noch zuerst einen move machen?? wie kann ich ganz aus Game()raus bzw. direkt gameover machen
-
-            Hero hero = warrior;
-            hero.Backpack.Add(healthPotion);
             while (hero.Alive == true)  // 
             {
                 VictoryCondition(hero);
@@ -142,9 +159,12 @@ namespace Mini_MUD
                 Headline(hero);
                 Console.WriteLine(hero.Field.Description);  //muss bei encounter -> combat nochmal geprintet werden für die ausgabe, sonst ist es weg nach clear()
                 Encounter(hero, monsters);
-
-                IsAlive(hero);  //schleife muss beendet werden bei tod!!!
-
+                 //schleife muss beendet werden bei tod!!!
+                //billige lösung: ...
+                if (hero.Alive == false)
+                {
+                    break;
+                }
                 hero.Field.PrintFieldContents();
                 Console.WriteLine();
                 Console.WriteLine(hero.Hitpoints + " hitpoints left");
@@ -156,23 +176,23 @@ namespace Mini_MUD
                 string input = Console.ReadLine().ToLower();
 
                 //Richtungen sind einfacher mit enums
-                if (input == "north")    //check if move possible Methode??  mit bool?  //wenn in neuen raum gemoved ist dann details
+                if (input == "north" || input == "n")    //check if move possible Methode??  mit bool?  //wenn in neuen raum gemoved ist dann details
                 {
                     hero.Moving(Direction.NORTH); // Enter() Methode in Moving integriert.             
                 }
-                else if (input == "east")
+                else if (input == "east" || input == "e")
                 {
                     hero.Moving(Direction.EAST);
                 }
-                else if (input == "south")
+                else if (input == "south" || input == "s")
                 {
                     hero.Moving(Direction.SOUTH);
                 }
-                else if (input == "west")
+                else if (input == "west" || input == "w")
                 {
                     hero.Moving(Direction.WEST);
                 }
-                else
+                else  //other ACTIONS
                 {
                     if (input == "take")
                     {
@@ -194,7 +214,7 @@ namespace Mini_MUD
                     }
                     else if (input == "cheatscroll")
                     {
-                        hero.Backpack.Add(scrollFirebolt);
+                        hero.Backpack.Add(scrollFireball);
                     }
                     else if (input == "cheatmeat")
                     {
@@ -211,14 +231,16 @@ namespace Mini_MUD
                     // CHEATS !!!!! 
                     else
                     {
-                        Console.WriteLine("what??");
+                        Console.WriteLine("what?");
                     }
                     Console.WriteLine("continue ... ");
                     Console.ReadLine();
                 }
+                hero.Manareg();
             }
             
             Console.Clear();
+            Console.WriteLine(". . .");
             Console.WriteLine("you collapse and fall on the ground ...");
             Console.WriteLine("your story will end as a lifless corpse among innumerable others whose names will never be remembered ...");
             Console.ReadLine();
@@ -237,14 +259,26 @@ namespace Mini_MUD
                     {
                         Console.Clear();
                         Console.WriteLine("");
-                        Console.WriteLine("the mighty gargoyle lies dead at your feet ... you cut off it's head as proof of your victory... ");
+                        Console.WriteLine("the mighty gargoyle lies dead at your feet ... you cut off its head as proof of your victory... ");
                         Console.WriteLine("congratulations!");
-                        Thread.Sleep(1500);
+                        Thread.Sleep(2000);
                         Console.Write("but ...");
+                        Thread.Sleep(1500);
                         Console.WriteLine("our princess is in another castle!");
                         Console.ReadLine();
                     }
                 }
+            }
+        }
+        public void Manareg(Hero hero)
+        {
+            if(hero.Mana < hero.ManaMax)
+            {
+                hero.Mana += 1;
+            }
+            if(hero.Mana > hero.ManaMax)
+            {
+                hero.Mana = hero.ManaMax;
             }
         }
         public void Use(Hero hero)
@@ -252,13 +286,17 @@ namespace Mini_MUD
             if (hero.Backpack.Count > 0)
             {
                 hero.PrintBackpack();
-                Console.WriteLine("which item do you want to use");
-                //geht das einfaher??
+                Console.WriteLine("which item do you want to use? or go 'back'");
+                //geht das einfacher??
                 string useS = ""; // damit frägt er so lange bis eingabe ein int ist
                 int use = 0;
                 do
                 {
                     useS = Console.ReadLine();
+                    if(useS == "back")
+                    {
+                        return;
+                    }
                 } while (!int.TryParse(useS, out use));
                 hero.UseItem(use);
             }
@@ -266,6 +304,30 @@ namespace Mini_MUD
             {
                 Console.WriteLine("your backpack is empty...");
             } */
+        }
+        public void Cast(Hero hero)
+        {
+            if (hero.Spellbook.Count > 0)
+            {
+                hero.PrintSpellbook();
+                Console.WriteLine("which spell do you want to cast? or go 'back'");
+                //geht das einfacher??
+                string useS = ""; // damit frägt er so lange bis eingabe ein int ist
+                int use = 0;
+                do
+                {
+                    useS = Console.ReadLine();
+                    if (useS == "back")
+                    {
+                        return;
+                    }
+                } while (!int.TryParse(useS, out use));
+                hero.UseSpell(use);
+            }
+            else
+            {
+                Console.WriteLine("you do not know any spells ...");
+            } 
         }
         public void IsAlive(Hero hero) //einfache prüfung mit bool ob Hero lebt oder tot ist
         {
@@ -291,7 +353,15 @@ namespace Mini_MUD
                 Console.WriteLine("you encountered a " + monster.Name + ". Prepare to fight!");
                 Console.WriteLine();
                 Console.WriteLine("you have " + hero.Hitpoints + " hitpoints left");
-                Console.WriteLine("'light' for fast attack, 'heavy' for heavy attack");
+                if(hero.Name == "mage")
+                {
+                    Console.WriteLine("you have " + hero.Mana + " mana left");                    
+                }               
+                Console.Write("'light' for light attack, 'heavy' for heavy attack");
+                if(hero.Name == "mage")
+                {
+                    Console.WriteLine(", 'cast' to use spells");
+                }
                 string attack = Console.ReadLine();
 
                 if (attack == "light")
@@ -306,6 +376,12 @@ namespace Mini_MUD
                     monster.Hitpoints -= damage;
                     hero.Hitpoints -= 1;
                     Console.WriteLine("heavy attack on " + monster.Name + " for " + damage + " damage but at the cost of 1 hitpoint");
+                }
+                else if(attack == "cast")
+                {                    
+                    Cast(hero);
+                    monster.Hitpoints -= hero.SpellDamage;
+                    hero.SpellDamage = 0;
                 }
                 else if (attack == "use")
                 {
@@ -345,6 +421,7 @@ namespace Mini_MUD
                 IsAlive(hero);
                 if (hero.Alive == true)
                 {
+                    hero.Manareg();
                     Console.WriteLine(monster.Name + " has " + monster.Hitpoints + " hitpoints left");
                     Console.WriteLine("continue...");
                     Console.ReadLine();
@@ -356,24 +433,25 @@ namespace Mini_MUD
             return;
 
         }
-        /* public Hero PickHero(List<Hero> hero)
+        public Hero PickHero(List<Hero> hero)
         {
 
-            int i = hero.Count;
+            int i = 1;
             Console.WriteLine("pick a hero");
+            
             foreach (Hero h in hero)
             {
-                Console.WriteLine(" " + h.Name);
-            }            
-            while (true)
+                Console.WriteLine(i + " " + h.Name);
+                i++;
+            }
+            string pick = ""; // damit frägt er so lange bis eingabe ein int ist
+            int index = 0;
+            do
             {
-                string input = Console.ReadLine();
-                if (input == hero[i].Name)
-                {
-                    return hero[i];
-                }
-            }       
-        }*/
+                pick = Console.ReadLine();                
+            } while (!int.TryParse(pick, out index));
+            return hero[index - 1];
+        }
         public void Headline(Hero hero)
         {
             Console.WriteLine("commands: take, use, backpack");

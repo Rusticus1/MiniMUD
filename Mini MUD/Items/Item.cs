@@ -9,6 +9,7 @@ namespace Mini_MUD
         FOOD,
         WEAPON,
         KEY,
+        SCROLL,
         SPELL,
         VICTORY,
     }
