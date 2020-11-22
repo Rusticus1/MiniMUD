@@ -7,7 +7,9 @@ namespace Mini_MUD
     public enum ItemType
     {
         FOOD,
+        MANA,
         WEAPON,
+        MAGICWEAPON,
         KEY,
         SCROLL,
         SPELL,

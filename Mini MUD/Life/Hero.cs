@@ -19,7 +19,10 @@ namespace Mini_MUD
         public int HitpointsMax { get; set; }
         public int Mana { get; set; }
         public int ManaMax { get; set; }
+        public int StartDamage { get; set; }
         public int BaseDamage { get; set; }        
+        public int StartArmor { get; set; }
+        public int BaseArmor { get; set; }
         public int SpellDamage { get; set; }
         public List<Item> Backpack { get; set; }
         public int BackpackMax { get; set; }
@@ -32,9 +35,10 @@ namespace Mini_MUD
             this.Name = name;
             this.Hitpoints = hitpoints;
             this.HitpointsMax = hitpoints;
-            this.Mana = 8;
-            this.ManaMax = 8;
-            this.BaseDamage = baseDamage;
+            this.Mana = 10;
+            this.ManaMax = 10;
+            this.StartDamage = baseDamage;
+            this.BaseDamage = baseDamage;          
             this.Fieldlist = fieldlist;
             this.Field = startfield;
             this.Backpack = new List<Item>();
@@ -53,8 +57,7 @@ namespace Mini_MUD
                     this.Field = this.Field.North;
                     this.Hitpoints -= 1;
                     Manareg();
-                }
-                
+                }                
             }
             else if (direction == Direction.EAST)
             {
@@ -99,12 +102,16 @@ namespace Mini_MUD
             }
         }
         
-        public void UseItem(int position)
-        {
-            int i = position - 1;
+        public bool UseItem(int position)
+        {            
             //this.Backpack[i].consume();
             //consume bei allen itemarten verschieden (wie enter() methode)
             //so lassen wies ist weil einfacher :)
+            int i = position - 1;
+            if (i < 0 || i >= this.Backpack.Count)
+            {
+                return false;
+            }
             if (this.Backpack[i].ItemType == ItemType.FOOD)   //kann man mit == schauen "ist objekt?"
             {
                 this.Hitpoints += this.Backpack[i].Value;
@@ -115,11 +122,21 @@ namespace Mini_MUD
                 }
                 this.Backpack.Remove(this.Backpack[i]);
             }
+            else if (this.Backpack[i].ItemType == ItemType.MANA)
+            {
+                this.Mana = this.ManaMax;
+                Console.WriteLine(this.Backpack[i].Name + " consumed. Mana restored");
+            }
             else if (this.Backpack[i].ItemType == ItemType.WEAPON)
             {
-                this.BaseDamage += this.Backpack[i].Value;
-                Console.WriteLine(this.Backpack[i].Name + " equipped. Base damage is now " + this.BaseDamage);
+                this.BaseDamage = (this.StartDamage + this.Backpack[i].Value);
+                Console.WriteLine(this.Backpack[i].Name + " equipped. Basedamage is now " + this.BaseDamage);
                 this.Backpack.Remove(Backpack[i]);
+            }
+            else if (this.Backpack[i].ItemType == ItemType.MAGICWEAPON)
+            {
+                this.SpellDamage = this.Backpack[i].Value;
+                Console.WriteLine(this.Backpack[i].Name + " equipped. All spell damage increased by " + this.Backpack[i].Value);
             }
             else if (this.Backpack[i].ItemType == ItemType.SCROLL)
             {
@@ -127,8 +144,6 @@ namespace Mini_MUD
                 Console.WriteLine(this.Backpack[i].Name + " cast for " + this.Backpack[i].Value + " damage");
                 this.Backpack.Remove(Backpack[i]);
             }
-            // spellbook use hier integrieren 
-
             else if (this.Backpack[i].ItemType == ItemType.KEY)  //Wenn schlüssel ist dann prüfe alle angrenzenden türen und sperre sie auf  Wie auf TRUE setzen??
             {
                 if (this.Field.North != null)
@@ -141,7 +156,7 @@ namespace Mini_MUD
                             door.Unlocked = true;           //mit "as" behandeln wir dieses Feld (die neue variable die das Feld darstellt)als Tür
                             Console.WriteLine(this.Field.North.RoomName + " unlocked... ");
                             this.Backpack.Remove(this.Backpack[i]);
-                            return;
+                            return true;
                         }
                     }
                 }
@@ -155,7 +170,7 @@ namespace Mini_MUD
                             door.Unlocked = true;           //mit "as" behandeln wir dieses Feld (die neue variable die das Feld darstellt)als Tür
                             Console.WriteLine(this.Field.East.RoomName + " unlocked... ");
                             this.Backpack.Remove(this.Backpack[i]);
-                            return;
+                            return true;
                         }
                     }
                 }
@@ -169,7 +184,7 @@ namespace Mini_MUD
                             door.Unlocked = true;           //mit "as" behandeln wir dieses Feld (die neue variable die das Feld darstellt)als Tür
                             Console.WriteLine(this.Field.South.RoomName + " unlocked... ");
                             this.Backpack.Remove(this.Backpack[i]);
-                            return;
+                            return true;
                         }
                     }
                 }
@@ -183,7 +198,7 @@ namespace Mini_MUD
                             door.Unlocked = true;           //mit "as" behandeln wir dieses Feld (die neue variable die das Feld darstellt)als Tür
                             Console.WriteLine(this.Field.West.RoomName + " unlocked... ");
                             this.Backpack.Remove(this.Backpack[i]);
-                            return;
+                            return true;
                         }
                     }
                 }
@@ -192,6 +207,7 @@ namespace Mini_MUD
                     Console.WriteLine("nothing to unlock");
                 }
             }
+            return true;
         }
         public void PrintBackpack()
         {

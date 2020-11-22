@@ -9,7 +9,7 @@ namespace Mini_MUD
 
     public abstract class Field  //monster hier ins Feld 
     {
-
+        //zusätzlicher Feldeffekt je nach feld. wird auf hero angewendet
         public string RoomName { get; set; }
         public string Description { get; set; }       
         public ItemUseable ItemUseable { get; set; }

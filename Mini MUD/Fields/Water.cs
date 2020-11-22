@@ -11,7 +11,8 @@ namespace Mini_MUD.Fields
         {
           
         }
-        public override bool Enter() //enter methode bool?
+
+        public override bool Enter() //brauche player
         {
 
             return true;

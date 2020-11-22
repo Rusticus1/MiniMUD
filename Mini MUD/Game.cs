@@ -22,25 +22,29 @@ namespace Mini_MUD
             ItemUseable keyEagle = new ItemUseable("eagle key", 0, ItemType.KEY);
             ItemUseable silverSword = new ItemUseable("silver sword", 1, ItemType.WEAPON);
             ItemUseable bfSword = new ItemUseable("big fucking sword", 2, ItemType.WEAPON);
+            ItemUseable sorcererStaff = new ItemUseable("sorcerer staff", 2, ItemType.MAGICWEAPON);
             ItemUseable gargoyleTrophy = new ItemUseable("gargoyle head trophy", 0, ItemType.VICTORY);
             ItemUseable scrollFireball = new ItemUseable("scroll of fireball", 10, ItemType.SCROLL);
 
             ItemUseable spellChargedbolt = new ItemUseable("chargedbolt (4)", 4, ItemType.SPELL);
             ItemUseable spellFirebolt = new ItemUseable("firebolt (6)", 6, ItemType.SPELL);
-            ItemUseable spellIcebolt = new ItemUseable("icebolt (1)", 1, ItemType.SPELL); //value wird dauerhaft von monster abgezogen bis minimumschaden
-           
+            ItemUseable spellBlackhole = new ItemUseable("black hole (10)", 10, ItemType.SPELL); 
 
-            List<Item> spellbook = new List<Item>() { spellChargedbolt, spellFirebolt, spellIcebolt };
+
+            List<Item> spellbook = new List<Item>() { spellChargedbolt, spellFirebolt, spellBlackhole };
 
             ItemConsumable bread = new ItemConsumable("dry bread", 3, ItemType.FOOD); //essen wird bei feld zufällig generiert
             ItemConsumable meat = new ItemConsumable("meat jerky", 6, ItemType.FOOD);
             ItemConsumable healthPotion = new ItemConsumable("health potion", 15, ItemType.FOOD);
+            ItemConsumable manaPotion = new ItemConsumable("mana potion", 10, ItemType.MANA);
 
             //Fields:
             #region Make Fields
             Wall wall = new Wall("wall", "Wall");
 
-            Floor a0 = new Floor("Crypt", "the room is dark and filled with Coffins. Half are broken and the remains of their former inhabitants lie scattered on the floor. As your eyes adjust to the darkness you notice numerous pairs of red glowing eyes around you staring at you in hunger ...");
+            //Dialog einbauen mit NPC's
+
+            Floor a0 = new Floor("Crypt", "the room is dark and filled with coffins. Half are broken and the remains of their former inhabitants lie scattered on the floor. In the dark corners of this crypt you notice numerous pairs of red glowing eyes staring at you in hunger ...");
             Water a1 = new Water("Flooded room", "this room has been flooded. You cannot see how deep the water is");
             Floor a2 = new Floor("Kights Chambers", "this has a large dinnertable in the center and dozens of shields and weapons decorate the surrounding walls");
             Door a3 = new Door("Gargoyle door", "you step through an enormous door shaped like a gargoyle. Inside you see a large stone statue ... or is it? As you approach, the statues eyes open with a crack!");
@@ -56,7 +60,7 @@ namespace Mini_MUD
 
             Floor c0 = new Floor("Storage", "the room is filled with old statues and broken furniture...");
             Floor c1 = new Floor("West hall", "a large but sparsly decorated hall");
-            Floor c2 = new Floor("Hallway", "to the east you see a large wodden door with an eagle emblem. It looks like it has been hastily barricaded from the outside in an attempt to keep something locked inside..");
+            Floor c2 = new Floor("Hallway", "to the east you see a large wooden door with an eagle emblem. It looks like it has been hastily barricaded from the outside in an attempt to keep something locked inside..");
             Door c3 = new Door("Eagle door", "you see crushed bodies and limbs scattered all over the floor ... something big must have done this");
             Floor c4 = new Floor("Corridor", "a tight corridor with a crossing in the center");
             Floor c5 = new Floor("Winecellar", "a room filled with old barrels used to store whine");
@@ -116,17 +120,18 @@ namespace Mini_MUD
             Monster hoemunculus = new Monster("Hoemunculus", 8, 4, a5, scrollFireball);
             Monster leprechaun = new Monster("Leprechaun", 5, 5, d5, keyGargoyle);
             Monster gargoyle = new Monster("Gargoyle", 30, 4, a3, gargoyleTrophy);
+            Monster german = new Monster("a german", 15, 4, d0, null);
             //Monster der liste hinzufügen damit Encounter() geprüft werden kann.
 
             List<Monster> monsters = new List<Monster>() { goblin, ghoul, golem, skeleton, hoemunculus, leprechaun, gargoyle };
             #endregion
 
-            Warrior warrior = new Warrior("warrior", 20, 4, fieldlist, d2);
-            Mage mage = new Mage("mage", 16, 8, 2,spellbook , fieldlist, d2);
-            
+            Warrior warrior = new Warrior("warrior", 20, 3, fieldlist, d2);
+            Mage mage = new Mage("mage", 16, 10, 2, spellbook, fieldlist, d2);
 
             List<Hero> heroes = new List<Hero>() { warrior, mage };
 
+            #region notizen
             //Hero hero = PickHero(heroes);
 
             //use() verwenden um im Door room door aufzusperren??  SOLVED
@@ -146,16 +151,25 @@ namespace Mini_MUD
             //erweitere, sollte es automatisch die methode erweitern. wie?
             //kann man spiel für andere zugänglich machen????
 
+            //evtl minimap wo man war? jeder raum wird hinzugefügt zur map. (wie bei robot?)
+
+            //Water=  if hero.field is Water .... 
+            //bei Enter() Methode vielleicht DOCH hero mitgeben?? (mehr optionen)
+
+            #endregion
+
+            Console.WriteLine("Mini Mud");
             Hero hero = PickHero(heroes);
-                        
+
             hero.Backpack.Add(healthPotion);
+            mage.Backpack.Add(manaPotion);
             Console.Clear();
 
             Console.WriteLine("you are a " + hero.Name);
-            Console.WriteLine("...you enter the main hall through a large, heavy wodden door");
-            Console.WriteLine("As the heavy door closes shut behind you it takes a moment for your eyes to adjust to the darkness");
+            Console.WriteLine("... you enter the main hall through a large and heavy door");
+            Console.WriteLine("As the door closes shut behind you ... it takes a moment for your eyes to adjust to the darkness");
             Console.ReadLine();
-            while (hero.Alive == true)  
+            while (hero.Alive == true)
             {
                 VictoryCondition(hero);
                 Console.Clear();
@@ -169,7 +183,7 @@ namespace Mini_MUD
                     break;
                 }
                 hero.Field.PrintFieldContents();
-                
+
                 Console.WriteLine();
                 Console.WriteLine(hero.Hitpoints + " hitpoints left");
                 if (hero is Mage)
@@ -213,7 +227,7 @@ namespace Mini_MUD
                     {
                         Use(hero);
                         hero.SpellDamage = 0;
-                    }                    
+                    }
                     //CHEATS  !!!!!! 
                     else if (input == "cheateaglekey")
                     {
@@ -227,11 +241,11 @@ namespace Mini_MUD
                     {
                         hero.Backpack.Add(meat);
                     }
-                    else if(input == "cheatgargoylekey")
+                    else if (input == "cheatgargoylekey")
                     {
                         hero.Backpack.Add(keyGargoyle);
                     }
-                    else if(input == "cheattrophy")
+                    else if (input == "cheattrophy")
                     {
                         hero.Backpack.Add(gargoyleTrophy);
                     }
@@ -243,9 +257,7 @@ namespace Mini_MUD
                     Console.WriteLine("continue ... ");
                     Console.ReadLine();
                 }
-                hero.Manareg();
             }
-            
             Console.Clear();
             Console.WriteLine(". . .");
             Console.WriteLine("you collapse and fall on the ground ...");
@@ -253,16 +265,15 @@ namespace Mini_MUD
             Console.ReadLine();
             Console.WriteLine("\t G A M E  O V E R ");
             return;
-
         }
         //sobad man einen raum betritt muss geprüft werden ob ein Monster drinnen ist
         public void VictoryCondition(Hero hero)
         {
-            foreach(Item item in hero.Backpack)
+            foreach (Item item in hero.Backpack)
             {
-                if(item.ItemType == ItemType.VICTORY)
+                if (item.ItemType == ItemType.VICTORY)
                 {
-                    while(true)
+                    while (true)
                     {
                         Console.Clear();
                         Console.WriteLine("");
@@ -270,7 +281,7 @@ namespace Mini_MUD
                         Console.WriteLine("congratulations!");
                         Thread.Sleep(2000);
                         Console.Write("but ...");
-                        Thread.Sleep(1500);
+                        Thread.Sleep(2000);
                         Console.WriteLine("our princess is in another castle!");
                         Console.ReadLine();
                     }
@@ -279,11 +290,11 @@ namespace Mini_MUD
         }
         public void Manareg(Hero hero)
         {
-            if(hero.Mana < hero.ManaMax)
+            if (hero.Mana < hero.ManaMax)
             {
                 hero.Mana += 1;
             }
-            if(hero.Mana > hero.ManaMax)
+            if (hero.Mana > hero.ManaMax)
             {
                 hero.Mana = hero.ManaMax;
             }
@@ -300,7 +311,7 @@ namespace Mini_MUD
                 do
                 {
                     useS = Console.ReadLine();
-                    if(useS == "back")
+                    if (useS == "back")
                     {
                         return;
                     }
@@ -312,7 +323,6 @@ namespace Mini_MUD
                 Console.WriteLine("your backpack is empty...");
             } */
         }
-        
         public void IsAlive(Hero hero) //einfache prüfung mit bool ob Hero lebt oder tot ist
         {
             if (hero.Hitpoints <= 0)
@@ -337,12 +347,12 @@ namespace Mini_MUD
                 Console.WriteLine("you encountered a " + monster.Name + ". Prepare to fight!");
                 Console.WriteLine();
                 Console.WriteLine("you have " + hero.Hitpoints + " hitpoints left");
-                if(hero is Mage)
+                if (hero is Mage)
                 {
-                    Console.WriteLine("you have " + hero.Mana + " mana left");                    
-                }                         
+                    Console.WriteLine("you have " + hero.Mana + " mana left");
+                }
                 Console.Write("'light' for light attack, 'heavy' for heavy attack");
-                if(hero.Name == "mage")
+                if (hero is Mage)
                 {
                     Console.WriteLine(", 'cast' to use spells");
                 }
@@ -350,9 +360,7 @@ namespace Mini_MUD
                 {
                     Console.WriteLine();
                 }
-
                 string attack = Console.ReadLine();
-
                 if (attack == "light")
                 {
                     int damage = hero.BaseDamage;
@@ -366,15 +374,14 @@ namespace Mini_MUD
                     hero.Hitpoints -= 1;
                     Console.WriteLine("heavy attack on " + monster.Name + " for " + damage + " damage but at the cost of 1 hitpoint");
                 }
-                else if(attack == "cast")
-                {   
-                    if(hero is Mage)
+                else if (attack == "cast")
+                {
+                    if (hero is Mage)
                     {
                         Cast(hero as Mage);
                         monster.Hitpoints -= hero.SpellDamage;
                         hero.SpellDamage = 0;
                     }
-                   
                 }
                 else if (attack == "use")
                 {
@@ -433,17 +440,25 @@ namespace Mini_MUD
                 hero.PrintSpellbook();
                 Console.WriteLine("which spell do you want to cast? or go 'back'");
                 //geht das einfacher??
-                string useS = ""; // damit frägt er so lange bis eingabe ein int ist
-                int use = 0;
-                do
+                // damit frägt er so lange bis eingabe ein int ist
+
+                while (true)
                 {
-                    useS = Console.ReadLine();
+                    string useS = Console.ReadLine();
                     if (useS == "back")
                     {
                         return;
                     }
-                } while (!int.TryParse(useS, out use));
-                hero.UseSpell(use);
+
+                    int use = 0;
+                    if (int.TryParse(useS, out use))
+                    {
+                        if (hero.UseSpell(use)) //Usespell ist bool. wenn wahr ist dann fertig. wenn nein nochmal loop
+                        {
+                            return;
+                        }
+                    }
+                }
             }
             else
             {
@@ -454,8 +469,8 @@ namespace Mini_MUD
         {
 
             int i = 1;
-            Console.WriteLine("pick a hero");
-            
+            Console.WriteLine("pick a hero to enter die dungeon ...");
+
             foreach (Hero h in hero)
             {
                 Console.WriteLine(i + " " + h.Name);
@@ -465,7 +480,7 @@ namespace Mini_MUD
             int index = 0;
             do
             {
-                pick = Console.ReadLine();                
+                pick = Console.ReadLine();
             } while (!int.TryParse(pick, out index));
             return hero[index - 1];
         }
@@ -479,6 +494,6 @@ namespace Mini_MUD
             Console.WriteLine();
             // Console.WriteLine(hero.Field.Description); Nein weil die Headline soll immer da sein auch beim kampf
         }
-        
+
     }
 }
