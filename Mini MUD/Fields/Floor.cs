@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Mini_MUD.Life;
 
 namespace Mini_MUD.Fields
 {
@@ -10,7 +11,7 @@ namespace Mini_MUD.Fields
         {
             this.RandomItemConsumable();
         }
-        public override bool Enter() //enter /move methode zum Hero?
+        public override bool Enter(Hero hero = null) //auch wenn ich irgendwo programmiert habe und noch nichts eingegeben habe funktionierts trotzdem
         {
             return true;
         }

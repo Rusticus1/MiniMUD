@@ -6,12 +6,10 @@ namespace Mini_MUD.Life
 {
     public class Mage : Hero
     {        
-        public List<Item> Spellbook { get; set; }
-        public int SpellBonusDamage { get; set; }
-        public Mage(string name, int hitpoints, int mana, int baseDamage, List<Item> spellbook, List<Field> fieldlist, Field startfield) : base(name, hitpoints, baseDamage, fieldlist, startfield)
+        public List<Item> Spellbook { get; set; }        
+        public Mage(string name, int hitpoints, int mana, int baseDamage, int startArmor, List<Item> spellbook, List<Field> fieldlist, Field startfield) : base(name, hitpoints, baseDamage, startArmor, fieldlist, startfield)
         {
-            this.Spellbook = spellbook;
-            this.SpellBonusDamage = 0;
+            this.Spellbook = spellbook;           
         }        
         public bool UseSpell(int position) //auswahl aus dem spellbook als INT wird ausgeführt  //geändert in bool
         {                                   //initial prüfen ob der spell existiert in der Liste

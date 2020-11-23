@@ -13,7 +13,7 @@ namespace Mini_MUD
         {
             this.Unlocked = false;
         }//hero cant enter and will be returned to previous room
-        public override bool Enter()
+        public override bool Enter(Hero hero = null) //auch wenn ich irgendwo programmiert habe und noch nichts eingegeben habe funktionierts trotzdem
         {
             //if hero hat schlüssel true sonst false, aber dann brauch ich den hero
             if(this.Unlocked is false)

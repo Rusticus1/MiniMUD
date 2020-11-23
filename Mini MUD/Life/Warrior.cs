@@ -6,7 +6,7 @@ namespace Mini_MUD.Life
 {
     class Warrior : Hero
     {
-        public Warrior(string name, int hitpoints, int baseDamage, List<Field> fieldlist, Field startfield) : base(name, hitpoints, baseDamage, fieldlist, startfield)
+        public Warrior(string name, int hitpoints, int baseDamage, int startArmor, List<Field> fieldlist, Field startfield) : base(name, hitpoints, baseDamage, startArmor, fieldlist, startfield)
         {
 
         }

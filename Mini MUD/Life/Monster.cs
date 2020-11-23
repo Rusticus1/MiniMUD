@@ -19,6 +19,10 @@ namespace Mini_MUD.Life
             this.Field = startfield;
             this.Item = itemdrop;
             
-        }       
+        }    
+        public void AddItemToInventory(Item item)
+        {
+            this.Item = item;
+        }
     }
 }

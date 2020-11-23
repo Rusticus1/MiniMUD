@@ -11,7 +11,7 @@ namespace Mini_MUD.Fields
         {
          
         }
-        public override bool Enter()
+        public override bool Enter(Hero hero = null) //auch wenn ich irgendwo programmiert habe und noch nichts eingegeben habe funktionierts trotzdem
         {   
             //if player has key true  else false
             return false;

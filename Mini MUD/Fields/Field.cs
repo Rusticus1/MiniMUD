@@ -11,7 +11,7 @@ namespace Mini_MUD
     {
         //zusätzlicher Feldeffekt je nach feld. wird auf hero angewendet
         public string RoomName { get; set; }
-        public string Description { get; set; }       
+        public string Description { get; set; }
         public ItemUseable ItemUseable { get; set; }
         public ItemConsumable ItemConsumable { get; set; }
         public Field North { get; set; }
@@ -29,7 +29,8 @@ namespace Mini_MUD
         {
             RoomName = roomName;
         }
-
+         public abstract bool Enter(Hero hero = null); //auch wenn ich irgendwo programmiert habe und noch nichts eingegeben habe funktionierts trotzdem
+                                                      //optional!!
         public void SetNeightbours(Field north, Field east, Field south, Field west)
         {
             this.North = north;
@@ -54,16 +55,18 @@ namespace Mini_MUD
             }
         }
 
-        public abstract bool Enter();
-
-        public void AddItemToField(ItemUseable itemUseable)
+        public void AddItemConsumableToField(ItemConsumable itemConsumable)
+        {
+            this.ItemConsumable = itemConsumable;
+        }
+        public void AddItemUseableToField(ItemUseable itemUseable)
         {
             this.ItemUseable = itemUseable;
         }
-        public void PrintFieldContents()  //keine parameter, weil ich kann das Feld ja mit dem Methodenaufruf mitschicken bzw. auf dem Feld aufrufen
-        {            
+        public void PrintFieldContents()  //keine parameter, weil Methode ist IM Field, deshalb this
+        {
             Console.Write("you found ");
-            if(ItemConsumable != null)
+            if (ItemConsumable != null)
             {
                 Console.WriteLine(ItemConsumable.Name);
             }
@@ -73,7 +76,7 @@ namespace Mini_MUD
             }
 
         }
-        public void PrintFieldMoves()
+        public void PrintFieldMoves() 
         {
             if (North != null)
             {

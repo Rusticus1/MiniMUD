@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
+
 namespace Mini_MUD
 {
     public enum Direction
@@ -24,21 +25,27 @@ namespace Mini_MUD
         public int StartArmor { get; set; }
         public int BaseArmor { get; set; }
         public int SpellDamage { get; set; }
+        public int SpellBonusDamage { get; set; }
         public List<Item> Backpack { get; set; }
         public int BackpackMax { get; set; }
         public Field Field { get; set; }
         public List<Field> Fieldlist { get; set; }
         public bool Alive { get; set; }
 
-        public Hero(string name, int hitpoints, int baseDamage, List<Field> fieldlist, Field startfield)
+        public Hero(string name, int hitpoints, int baseDamage, int startArmor, List<Field> fieldlist, Field startfield)
         {
+            // Start ist der startwert der nicht verändert werden kann
+            // Base wird zur Berechnung verwendet und kann durch items verändert werden
             this.Name = name;
             this.Hitpoints = hitpoints;
             this.HitpointsMax = hitpoints;
             this.Mana = 10;
             this.ManaMax = 10;
             this.StartDamage = baseDamage;
-            this.BaseDamage = baseDamage;          
+            this.BaseDamage = baseDamage;
+            this.StartArmor = startArmor;
+            this.BaseArmor = startArmor;
+            this.SpellBonusDamage = 0;
             this.Fieldlist = fieldlist;
             this.Field = startfield;
             this.Backpack = new List<Item>();
@@ -52,7 +59,7 @@ namespace Mini_MUD
             //wenn er den key hat dannn ja sonst nein - NEIN weil sonst geht nicht mit Enter () Methode          
             if (direction == Direction.NORTH)
             {
-                if (this.Field.North != null && this.Field.North.Enter())
+                if (this.Field.North != null && this.Field.North.Enter(this))
                 {
                     this.Field = this.Field.North;
                     this.Hitpoints -= 1;
@@ -61,7 +68,7 @@ namespace Mini_MUD
             }
             else if (direction == Direction.EAST)
             {
-                if (this.Field.East != null && this.Field.East.Enter())
+                if (this.Field.East != null && this.Field.East.Enter(this))
                 {
                     this.Field = this.Field.East;
                     this.Hitpoints -= 1;
@@ -70,7 +77,7 @@ namespace Mini_MUD
             }
             else if (direction == Direction.SOUTH)
             {
-                if (this.Field.South != null && this.Field.South.Enter())
+                if (this.Field.South != null && this.Field.South.Enter(this))
                 {
                     this.Field = this.Field.South;
                     this.Hitpoints -= 1;
@@ -79,13 +86,13 @@ namespace Mini_MUD
             }
             else if (direction == Direction.WEST)
             {
-                if (this.Field.West != null && this.Field.West.Enter())
+                if (this.Field.West != null && this.Field.West.Enter(this))
                 {
                     this.Field = this.Field.West;
                     this.Hitpoints -= 1;
                     Manareg();
                 }
-            }            
+            }        
         }
 
         public void TakeItemConsumable()
@@ -124,8 +131,15 @@ namespace Mini_MUD
             }
             else if (this.Backpack[i].ItemType == ItemType.MANA)
             {
-                this.Mana = this.ManaMax;
-                Console.WriteLine(this.Backpack[i].Name + " consumed. Mana restored");
+                if(this.Name == "Mage")                   //  !!!!!!!!!!!!!!!!!!!!!!!!!!!!  noch nicht schön
+                {
+                    this.Mana = this.ManaMax;
+                    Console.WriteLine(this.Backpack[i].Name + " consumed. Mana restored");                    
+                }
+                else
+                {
+                    Console.WriteLine(this.Backpack[i].Name + " consumed. But alas ...nothing happened");
+                }                
             }
             else if (this.Backpack[i].ItemType == ItemType.WEAPON)
             {
@@ -135,8 +149,9 @@ namespace Mini_MUD
             }
             else if (this.Backpack[i].ItemType == ItemType.MAGICWEAPON)
             {
-                this.SpellDamage = this.Backpack[i].Value;
+                this.SpellBonusDamage = this.Backpack[i].Value;
                 Console.WriteLine(this.Backpack[i].Name + " equipped. All spell damage increased by " + this.Backpack[i].Value);
+                this.Backpack.Remove(Backpack[i]);
             }
             else if (this.Backpack[i].ItemType == ItemType.SCROLL)
             {
@@ -222,11 +237,9 @@ namespace Mini_MUD
             {
                 Console.WriteLine("your backpack is empty...");
             }
-
         }
         public void Manareg()
         {
-
             if (this.Mana < this.ManaMax)
             {
                 this.Mana += 1;

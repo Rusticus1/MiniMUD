@@ -55,7 +55,7 @@ namespace Mini_MUD
             Floor b1 = new Floor("Courtyard", "you step into a courtyard. The faint light of a full moon shines through a foggy and otherwise pitch black night");
             Floor b2 = new Floor("North hall", "you notice the skeletal remains of a warrior cowering in a corner firmly holding his rusted old sword. He must have died ages ago");
             Floor b3 = new Floor("Empty hall", "this hall might have been used for dust collection...");
-            Floor b4 = new Floor("Torture chamber", "upon seein the devices in this room you can clearly see what it was used for");
+            Floor b4 = new Floor("Torture chamber", "upon seein the devices in this room you know exactly what it was used for");
             Floor b5 = new Floor("Bedchambers", "there is no time for a nap ...");
 
             Floor c0 = new Floor("Storage", "the room is filled with old statues and broken furniture...");
@@ -63,19 +63,22 @@ namespace Mini_MUD
             Floor c2 = new Floor("Hallway", "to the east you see a large wooden door with an eagle emblem. It looks like it has been hastily barricaded from the outside in an attempt to keep something locked inside..");
             Door c3 = new Door("Eagle door", "you see crushed bodies and limbs scattered all over the floor ... something big must have done this");
             Floor c4 = new Floor("Corridor", "a tight corridor with a crossing in the center");
-            Floor c5 = new Floor("Winecellar", "a room filled with old barrels used to store whine");
+            Water c5 = new Water("Winecellar", "the ground is covered with a strange liquid");
 
             Floor d0 = new Floor("Crumbling corner", "the walls to the outside world are cracked and moonlight illuminates the room");
             Floor d1 = new Floor("West corridor", "a tight corridor... you can see a small room ruptured by faint sunbeams at the far end");
             Floor d2 = new Floor("Entrance hall", "you see a heavy door through which you entered this dungeon and two smaller archways leading deeper into the darkness");
-            Floor d3 = new Floor("Well", "there is an old, dried out well in this room");
-            Floor d4 = new Floor("Weapons champber", "the room is filled racks containing all kinds of weapons and armor. Sadly, most are far beyond usable...");
+            Water d3 = new Water("Well", "the ground around this overflowing well is covered in water");
+            Floor d4 = new Floor("Weapons chamber", "the room is filled racks containing all kinds of weapons and armor. Sadly, most are far beyond usable...");
             Floor d5 = new Floor("Treasure Room", "you step into a room filled with enough treasure to buy a castle... maybe you could come back here with a larger backpack.");
             #endregion
 
             //damit Door.cs den Schlüssel kennt
             c3.AddItemUseable(keyEagle);
             a3.AddItemUseable(keyGargoyle);
+            a1.AddItemConsumableToField(manaPotion);
+            c5.AddItemConsumableToField(healthPotion);
+            d0.AddItemConsumableToField(healthPotion);
 
 
             //Methode für zuweisung???
@@ -116,18 +119,17 @@ namespace Mini_MUD
             Monster goblin = new Monster("Goblin", 10, 3, c0, silverSword);
             Monster ghoul = new Monster("Ghoul", 16, 2, a0, keyEagle);
             Monster golem = new Monster("Golem", 20, 3, d4, bfSword);
-            Monster skeleton = new Monster("Skeleton", 13, 3, b4, healthPotion);
+            Monster skeleton = new Monster("Skeleton", 13, 3, b4, sorcererStaff);
             Monster hoemunculus = new Monster("Hoemunculus", 8, 4, a5, scrollFireball);
             Monster leprechaun = new Monster("Leprechaun", 5, 5, d5, keyGargoyle);
             Monster gargoyle = new Monster("Gargoyle", 30, 4, a3, gargoyleTrophy);
-            Monster german = new Monster("a german", 15, 4, d0, null);
             //Monster der liste hinzufügen damit Encounter() geprüft werden kann.
 
             List<Monster> monsters = new List<Monster>() { goblin, ghoul, golem, skeleton, hoemunculus, leprechaun, gargoyle };
             #endregion
 
-            Warrior warrior = new Warrior("warrior", 20, 3, fieldlist, d2);
-            Mage mage = new Mage("mage", 16, 10, 2, spellbook, fieldlist, d2);
+            Warrior warrior = new Warrior("warrior", 20, 3, 1, fieldlist, d2);
+            Mage mage = new Mage("mage", 20, 10, 2, 0, spellbook, fieldlist, d2);
 
             List<Hero> heroes = new List<Hero>() { warrior, mage };
 
@@ -136,38 +138,40 @@ namespace Mini_MUD
 
             //use() verwenden um im Door room door aufzusperren??  SOLVED
             //schlüssel verwenden und himmelsrichtung auswählen SOLVED
-
             //Schwert wird immer wie Itemtype.Food behandelt und gegessen!!  SOLVED  (itemType tippfehler! groß und kleinschreibung beachten!!!!!!!!)
             //vergleich  (items)  wenn item == 'class' itemConsumable   geht das???  SOLVED
-
             //wenn monster hero tötet ist nicht gleich fertig. muss immer noch zuerst einen move machen?? SOLVED
             //wie kann ich ganz aus Game()raus bzw. direkt gameover machen   SOLVED
-
-            //use()backpack beste möglichkeit damit eingabe richtig sein muss???
+            //use()backpack beste möglichkeit damit eingabe richtig sein muss??? SOLVED
 
             //wie kann ich die Tür mit einem hero verbinden? bzw von dort daten holen ohne Door(Hero) mitzugeben.
 
-            //wenn die die Wahl habe (zB spellbook, Hero auswahl) will ich schreiben können was ich will. wenn ich das spellbook
-            //erweitere, sollte es automatisch die methode erweitern. wie?
             //kann man spiel für andere zugänglich machen????
 
             //evtl minimap wo man war? jeder raum wird hinzugefügt zur map. (wie bei robot?)
 
             //Water=  if hero.field is Water .... 
             //bei Enter() Methode vielleicht DOCH hero mitgeben?? (mehr optionen)
+            //Wasserfeld??
+
+            //Kopieren in WPF?  //evtl am Nachmittag schauen was die anderen gemacht haben
+            //Random damage = randomnumber 0-2. bei 0 = -1, bei 1 = 0, bei 2 = +1
+            //kritische treffer chance 20 % ?
+
 
             #endregion
-
+            #region Hero selection and item changes
             Console.WriteLine("Mini Mud");
             Hero hero = PickHero(heroes);
+                       
+            mage.Backpack.Add(manaPotion);            
+            #endregion
 
-            hero.Backpack.Add(healthPotion);
-            mage.Backpack.Add(manaPotion);
             Console.Clear();
 
             Console.WriteLine("you are a " + hero.Name);
             Console.WriteLine("... you enter the main hall through a large and heavy door");
-            Console.WriteLine("As the door closes shut behind you ... it takes a moment for your eyes to adjust to the darkness");
+            Console.WriteLine("As the door closes shut behind you it takes a moment for your eyes to adjust to the darkness");
             Console.ReadLine();
             while (hero.Alive == true)
             {
@@ -192,7 +196,7 @@ namespace Mini_MUD
                 }
                 Console.WriteLine("What do you want to do...");
                 Console.WriteLine();
-                hero.Field.PrintFieldMoves();  //ich stehe auf dem Feld deshalb muss ich des nicht mitgeben               
+                hero.Field.PrintFieldMoves(); //ich stehe auf dem Feld deshalb muss ich des nicht mitgeben               
 
                 string input = Console.ReadLine().ToLower();
 
@@ -228,6 +232,7 @@ namespace Mini_MUD
                         Use(hero);
                         hero.SpellDamage = 0;
                     }
+                    #region CHEATS
                     //CHEATS  !!!!!! 
                     else if (input == "cheateaglekey")
                     {
@@ -249,6 +254,7 @@ namespace Mini_MUD
                     {
                         hero.Backpack.Add(gargoyleTrophy);
                     }
+                    #endregion
                     // CHEATS !!!!! 
                     else
                     {
@@ -340,7 +346,7 @@ namespace Mini_MUD
                 }
             }
         }
-        public void Combat(Hero hero, Monster monster) //light oder heavy schreiben. bei rechtschreibfehler = "missed"
+        public void Combat(Hero hero, Monster monster) //'light' oder 'heavy' schreiben. oder wenn Mage 'cast' bei rechtschreibfehler = "missed"
         {
             while (hero.Alive) //solange der held lebt:
             {
@@ -383,11 +389,11 @@ namespace Mini_MUD
                         hero.SpellDamage = 0;
                     }
                 }
-                else if (attack == "use")
+                else if (attack == "use") //wie beim normalen use - Inventarauswahl
                 {
                     Use(hero);
-                    monster.Hitpoints -= hero.SpellDamage;
-                    hero.SpellDamage = 0;
+                    monster.Hitpoints -= hero.SpellDamage; //falls scroll verwendet wird, wird spelldamage applied und dann wieder auf 0 gesetzt.
+                    hero.SpellDamage = 0;  
                 }
                 else
                 {
@@ -395,7 +401,7 @@ namespace Mini_MUD
                 }
                 if (monster.Hitpoints > 0) //solange das monster lebt
                 {
-                    hero.Hitpoints -= monster.BaseDamage;
+                    hero.Hitpoints -= (monster.BaseDamage - hero.BaseArmor);
                     Console.WriteLine(monster.Name + " hits you for " + monster.BaseDamage + " damage");
                 }
                 else
@@ -433,6 +439,10 @@ namespace Mini_MUD
             return;
 
         }
+        public int DamageCalculator(int damage) //WIP  baseDamage kommt rein, random damage geht raus
+        {
+            return damage;
+        }
         public void Cast(Mage hero) //cast für die auswahl aus dem sellbook
         {
             if (hero.Spellbook.Count > 0)
@@ -469,7 +479,7 @@ namespace Mini_MUD
         {
 
             int i = 1;
-            Console.WriteLine("pick a hero to enter die dungeon ...");
+            Console.WriteLine("pick a hero to enter the dungeon ...");
 
             foreach (Hero h in hero)
             {
