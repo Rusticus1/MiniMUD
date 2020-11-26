@@ -30,7 +30,6 @@ namespace Mini_MUD
             ItemUseable spellFirebolt = new ItemUseable("firebolt (6)", 6, ItemType.SPELL);
             ItemUseable spellBlackhole = new ItemUseable("black hole (10)", 10, ItemType.SPELL); 
 
-
             List<Item> spellbook = new List<Item>() { spellChargedbolt, spellFirebolt, spellBlackhole };
 
             ItemConsumable bread = new ItemConsumable("dry bread", 3, ItemType.FOOD); //essen wird bei feld zufällig generiert
@@ -80,7 +79,6 @@ namespace Mini_MUD
             c5.AddItemConsumableToField(healthPotion);
             d0.AddItemConsumableToField(healthPotion);
 
-
             //Methode für zuweisung???
             #region setNeightbours
             a0.SetNeightbours(null, a1, b0, null);
@@ -113,11 +111,10 @@ namespace Mini_MUD
 
             List<Field> fieldlist = new List<Field> { a0, a1, a2, a3, a4, a5, b0, b1, b2, b3, b4, b5, c0, c1, c2, c3, c4, c5, d0, d1, d2, d3, d4, d5 };
             #endregion                       
-
-            //a0.AddItemToField(keyEagle);
+            
             #region Monsters
             Monster goblin = new Monster("Goblin", 10, 3, c0, silverSword);
-            Monster ghoul = new Monster("Ghoul", 16, 2, a0, keyEagle);
+            Monster ghoul = new Monster("Ghoul", 16, 3, a0, keyEagle);
             Monster golem = new Monster("Golem", 20, 3, d4, bfSword);
             Monster skeleton = new Monster("Skeleton", 13, 3, b4, sorcererStaff);
             Monster hoemunculus = new Monster("Hoemunculus", 8, 4, a5, scrollFireball);
@@ -158,20 +155,23 @@ namespace Mini_MUD
             //Random damage = randomnumber 0-2. bei 0 = -1, bei 1 = 0, bei 2 = +1
             //kritische treffer chance 20 % ?
 
+            //wie kann ich Game() sofort beenden?
 
             #endregion
             #region Hero selection and item changes
             Console.WriteLine("Mini Mud");
             Hero hero = PickHero(heroes);
                        
-            mage.Backpack.Add(manaPotion);            
+            mage.Backpack.Add(manaPotion);
+            mage.Backpack.Add(healthPotion);
             #endregion
 
             Console.Clear();
 
-            Console.WriteLine("you are a " + hero.Name);
+            Console.WriteLine(hero.Name + ", you seek to slay the garoyle!");
             Console.WriteLine("... you enter the main hall through a large and heavy door");
             Console.WriteLine("As the door closes shut behind you it takes a moment for your eyes to adjust to the darkness");
+            Console.WriteLine("continue...");
             Console.ReadLine();
             while (hero.Alive == true)
             {
@@ -186,6 +186,7 @@ namespace Mini_MUD
                 {
                     break;
                 }
+                Console.WriteLine("");
                 hero.Field.PrintFieldContents();
 
                 Console.WriteLine();
@@ -231,6 +232,10 @@ namespace Mini_MUD
                     {
                         Use(hero);
                         hero.SpellDamage = 0;
+                    }
+                    else if (input == "info")
+                    {
+                        GameInfo();
                     }
                     #region CHEATS
                     //CHEATS  !!!!!! 
@@ -401,8 +406,9 @@ namespace Mini_MUD
                 }
                 if (monster.Hitpoints > 0) //solange das monster lebt
                 {
-                    hero.Hitpoints -= (monster.BaseDamage - hero.BaseArmor);
-                    Console.WriteLine(monster.Name + " hits you for " + monster.BaseDamage + " damage");
+                    int monsterDamage = monster.BaseDamage - hero.BaseArmor;
+                    hero.Hitpoints -= monsterDamage;
+                    Console.WriteLine(monster.Name + " hits you for " + monsterDamage + " damage");
                 }
                 else
                 {
@@ -459,7 +465,6 @@ namespace Mini_MUD
                     {
                         return;
                     }
-
                     int use = 0;
                     if (int.TryParse(useS, out use))
                     {
@@ -496,7 +501,7 @@ namespace Mini_MUD
         }
         public void Headline(Hero hero)
         {
-            Console.WriteLine("commands: take, use, backpack");
+            Console.WriteLine("commands: take, use, backpack, info (game info)");
             Console.WriteLine("the dark energies of this place are slowly draining your life away ... .. .");
             Console.WriteLine("... ... ... ...");
             Console.WriteLine();
@@ -504,6 +509,21 @@ namespace Mini_MUD
             Console.WriteLine();
             // Console.WriteLine(hero.Field.Description); Nein weil die Headline soll immer da sein auch beim kampf
         }
+        public void GameInfo()
+        {
+            Console.Clear();
+            Console.WriteLine("type direction to move your hero");
+            Console.WriteLine("each movement costs 1 hitpoint");
+            Console.WriteLine("each movement or turn in combat restores mana (mage only)");
+            Console.WriteLine("movement into water areas will cost additional hitpoints based on your armor level");
+            Console.WriteLine("find randomly generated food in rooms to restore hitpoints");
+            Console.WriteLine("kill monsters to find weapons and equip them to increase damage");
+            Console.WriteLine("type 'use' to use any item in your backpack");
+            Console.WriteLine("type 'take' to pick up items you find in rooms");
+            Console.WriteLine("KILL the gargoyle to win the game!");
 
+            Console.ReadLine();
+            
+        }
     }
 }
